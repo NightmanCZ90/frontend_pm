@@ -11,6 +11,7 @@
 html,
 body {
   height: 100%;
+  color: var(--colorText);
 }
 
 body {
@@ -30,27 +31,6 @@ code {
 :root {
 
   /* Colors */
-  --secondary-text: #232325;
-
-  --primary-background: #F9BA48;
-
-  --color-header: #151517;
-  --color-header-subtitle: #79797A;
-  --color-header-subinfo: #F9BA48;
-
-  --card-hover: #f08f18;
-  --card-hover-verylight: #f08f1815;
-  --card-hover-light: #f08f1830;
-
-  --card-investor: #f08f18;
-  --card-investor-hover: #fff;
-  --card-list: #232325;
-
-  --color-profit: #26FF26;
-  --color-loss: #FF2626;
-
-  --color-paper: #3A3A3E;
-
-  --text-error: #F44336;
-  --text-success: #66BB6A;
+  --colorBackground: #303030;
+  --colorText: #fff;
 }

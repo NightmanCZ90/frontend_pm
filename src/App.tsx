@@ -1,10 +1,6 @@
 import type { Component } from 'solid-js';
 import { Button } from '@suid/material';
-import { styled } from 'solid-styled-components';
-
-const StyledApp = styled("div")`
-
-`;
+import { StyledApp } from './App.styles';
 
 const App: Component = () => {
   return (

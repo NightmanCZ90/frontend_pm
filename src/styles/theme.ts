@@ -4,14 +4,11 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#f9ba48',
-      light: '#f7dcaa',
-      dark: '#f08f18',
+      main: '#e64a19',
     },
-    background: {
-      paper: '#3A3A3E',
-      default: '#232325',
-    }
+    secondary: {
+      main: '#8c9eff',
+    },
   },
   shape: {
     borderRadius: 6,
