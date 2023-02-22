@@ -1,7 +1,10 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
+import { ThemeProvider } from '@suid/material';
 
+import './index.css';
 import App from './App';
+import { darkTheme } from './styles/theme';
 
 const root = document.getElementById('root');
 
@@ -11,4 +14,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <App />, root!);
+render(() => (
+  <ThemeProvider theme={darkTheme}>
+    <App />
+  </ThemeProvider>
+), root!);
