@@ -1,20 +1,20 @@
-import { Component } from 'solid-js';
-import { Button, Paper } from '@suid/material';
+import type { Component } from 'solid-js';
+import { Route, Routes } from '@solidjs/router';
 
 import { StyledApp } from './App.styles';
-import { useTheme } from './styles/theme';
+import SideNavigation from './components/SideNavigation';
+import Home from './pages/Home';
+import Portfolios from './pages/Portfolios';
 
 const App: Component = () => {
-  const [mode, toggleColorMode] = useTheme();
 
   return (
     <StyledApp>
-      <Paper>
-        <h1>Portfolio manager</h1>
-        <Button variant='contained' onClick={toggleColorMode}>Toggle theme</Button>
-        <Button variant='contained' color='secondary' onClick={toggleColorMode}>Toggle theme</Button>
-        {JSON.stringify(mode())}
-      </Paper>
+      <SideNavigation />
+      <Routes>
+        <Route path={'/'} element={<Home />} />
+        <Route path={'/portfolios'} element={<Portfolios />} />
+      </Routes>
     </StyledApp>
   );
 };
