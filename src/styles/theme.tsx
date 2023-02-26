@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider } from "@suid/material";
+import { createTheme, CssBaseline, ThemeProvider } from "@suid/material";
 import { createPalette } from "@suid/material/styles/createPalette";
 import { Accessor, createContext, createMemo, createSignal, ParentComponent, useContext } from "solid-js";
 
@@ -233,6 +233,7 @@ export const CustomThemeProvider: ParentComponent = (props) => {
   return (
     <ThemeContext.Provider value={[mode, toggleColorMode]}>
       <ThemeProvider theme={theme}>
+        <CssBaseline enableColorScheme />
         {props.children}
       </ThemeProvider>
     </ThemeContext.Provider>
