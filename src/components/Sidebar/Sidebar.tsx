@@ -2,7 +2,7 @@ import { Navigator, useLocation, useNavigate } from "@solidjs/router";
 import { DataSaverOff, ShowChart } from "@suid/icons-material";
 import { Component, JSX } from "solid-js";
 
-import { StyledNavigationButton, StyledSideNavigation } from "./SideNavigation.styles";
+import { StyledNavigationButton, StyledSidebar } from "./Sidebar.styles";
 
 type NavigationButtonProps = {
   icon: any;
@@ -34,24 +34,24 @@ const renderNavigationButton = ({ icon, name, navigate, pathname, route, tooltip
   )
 }
 
-interface ISideNavigationProps {
+interface ISidebarProps {
 
 }
 
-const SideNavigation: Component<ISideNavigationProps> = () => {
+const Sidebar: Component<ISidebarProps> = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <StyledSideNavigation>
+    <StyledSidebar>
 
       <div class="navigation-main">
         {renderNavigationButton({ icon: <ShowChart />, name: 'home', navigate, pathname: location.pathname, route: '/', tooltipTitle: 'Home' })}
         {renderNavigationButton({ icon: <DataSaverOff />, name: 'portfolios', navigate, pathname: location.pathname, route: '/portfolios', tooltipTitle: 'Portfolios' })}
       </div>
 
-    </StyledSideNavigation>
+    </StyledSidebar>
   );
 }
 
-export default SideNavigation;
+export default Sidebar;

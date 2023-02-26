@@ -1,11 +1,11 @@
 import { IconButton } from '@suid/material';
 import { styled } from 'solid-styled-components';
 
-interface IStyledSideNavigationProps {
+interface IStyledSidebarProps {
 
 }
 
-export const StyledSideNavigation = styled("div") <IStyledSideNavigationProps>`
+export const StyledSidebar = styled("div") <IStyledSidebarProps>`
     position: sticky;
     height: 100vh;
     top: 0;
