@@ -1,5 +1,7 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
+import { Router } from '@solidjs/router';
+import { ThemeProvider } from '@suid/material';
 
 import './index.css';
 import App from './App';
@@ -15,6 +17,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(() => (
   <CustomThemeProvider>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </CustomThemeProvider>
 ), root!);
