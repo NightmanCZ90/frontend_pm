@@ -2,14 +2,9 @@ import { createTheme, CssBaseline, ThemeProvider } from "@suid/material";
 import { createPalette } from "@suid/material/styles/createPalette";
 import { Accessor, createContext, createMemo, createSignal, ParentComponent, useContext } from "solid-js";
 
-export enum ThemeMode {
-  Dark = 'dark',
-  Light = 'light',
-}
-
 // Color design tokens export
-export const tokens = (mode: ThemeMode) => ({
-  ...(mode === ThemeMode.Dark
+export const tokens = (mode: "dark" | "light") => ({
+  ...(mode === "dark"
     ? {
       grey: {
         100: "#e0e0e0",
@@ -127,12 +122,12 @@ export const tokens = (mode: ThemeMode) => ({
 });
 
 // MUI theme settings
-export const themeSettings = (mode: ThemeMode) => {
+export const themeSettings = (mode: "dark" | "light") => {
   const colors = tokens(mode);
   return {
     palette: {
       mode: mode,
-      ...(mode === ThemeMode.Dark
+      ...(mode === "dark"
         ? {
           // Palette values for dark mode
           primary: {
@@ -200,28 +195,28 @@ export const themeSettings = (mode: ThemeMode) => {
 };
 
 type ThemeContextValue = [
-  Accessor<ThemeMode>,
+  Accessor<string>,
   () => void
 ];
 
 // Context for color mode
 export const ThemeContext = createContext<ThemeContextValue>([
-  () => ThemeMode.Dark,
+  () => "dark",
   () => undefined
 ]);
 
 
 export const CustomThemeProvider: ParentComponent = (props) => {
-  const [mode, setMode] = createSignal<ThemeMode>(ThemeMode.Dark)
+  const [mode, setMode] = createSignal<"dark" | "light">("dark")
 
-  const toggleColorMode = () => setMode((prev) => (prev === ThemeMode.Light ? ThemeMode.Dark : ThemeMode.Light));
+  const toggleColorMode = () => setMode((prev) => (prev === "light" ? "dark" : "light"));
 
   const settings = themeSettings(mode())
 
   const palette = createMemo(() =>
     createPalette({
       ...(settings.palette),
-      mode: mode() === ThemeMode.Dark ? "dark" : "light",
+      mode: mode() === "dark" ? "dark" : "light",
     })
   );
 
