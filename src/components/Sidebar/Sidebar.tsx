@@ -46,7 +46,7 @@ const Sidebar: Component<ISidebarProps> = () => {
     <StyledSidebar>
 
       <div class="navigation-main">
-        {renderNavigationButton({ icon: <ShowChart />, name: 'home', navigate, pathname: location.pathname, route: '/', tooltipTitle: 'Home' })}
+        {renderNavigationButton({ icon: <ShowChart />, name: 'home', navigate, pathname: location.pathname, route: '/', tooltipTitle: 'Dashboard' })}
         {renderNavigationButton({ icon: <DataSaverOff />, name: 'portfolios', navigate, pathname: location.pathname, route: '/portfolios', tooltipTitle: 'Portfolios' })}
       </div>
 
