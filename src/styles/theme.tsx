@@ -195,34 +195,34 @@ export const themeSettings = (mode: "dark" | "light") => {
 };
 
 type ThemeContextValue = [
-  Accessor<string>,
-  () => void
+  Accessor<"dark" | "light">,
+  () => void,
 ];
 
 // Context for color mode
 export const ThemeContext = createContext<ThemeContextValue>([
-  () => "dark",
-  () => undefined
+  (() => "dark") as Accessor<"dark" | "light">,
+  () => undefined,
 ]);
 
 
 export const CustomThemeProvider: ParentComponent = (props) => {
-  const [mode, setMode] = createSignal<"dark" | "light">("dark")
+  const [mode, setMode] = createSignal<"dark" | "light">("dark");
 
   const toggleColorMode = () => setMode((prev) => (prev === "light" ? "dark" : "light"));
 
-  const settings = themeSettings(mode())
+  const settings = () => themeSettings(mode());
 
   const palette = createMemo(() =>
     createPalette({
-      ...(settings.palette),
+      ...(settings().palette),
       mode: mode() === "dark" ? "dark" : "light",
     })
   );
 
   const theme = createTheme({
     palette,
-    typography: settings.typography
+    typography: settings().typography
   });
 
   return (
@@ -232,8 +232,8 @@ export const CustomThemeProvider: ParentComponent = (props) => {
         {props.children}
       </ThemeProvider>
     </ThemeContext.Provider>
-  )
+  );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+export const useThemeContext = () => useContext(ThemeContext);
 
