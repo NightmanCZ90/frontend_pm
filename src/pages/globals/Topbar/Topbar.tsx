@@ -1,6 +1,6 @@
 import { Component, Show } from "solid-js";
 import { LightModeOutlined, DarkModeOutlined, NotificationsOutlined, SettingsOutlined, PersonOutlined } from '@suid/icons-material'
-import { Box, IconButton } from "@suid/material";
+import { IconButton } from "@suid/material";
 
 import { useThemeContext } from "../../../styles/theme";
 import { StyledTopbar } from "./Topbar.styles";
@@ -10,7 +10,7 @@ const Topbar: Component = () => {
 
   return (
     <StyledTopbar>
-      <Box>
+      <div>
 
         <IconButton onClick={toggleColorMode}>
           <Show when={mode() === 'light'} fallback={<LightModeOutlined />}>
@@ -30,7 +30,7 @@ const Topbar: Component = () => {
           <PersonOutlined />
         </IconButton>
 
-      </Box>
+      </div>
     </StyledTopbar>
   )
 }

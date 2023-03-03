@@ -12,13 +12,15 @@ const App: Component = () => {
   return (
     <StyledApp>
       <Sidebar />
-      <div class='content'>
+      <main>
         <Topbar />
-        <Routes>
-          <Route path={'/'} element={<Dashboard />} />
-          <Route path={'/portfolios'} element={<Portfolios />} />
-        </Routes>
-      </div>
+        <div class='content'>
+          <Routes>
+            <Route path={'/'} element={<Dashboard />} />
+            <Route path={'/portfolios'} element={<Portfolios />} />
+          </Routes>
+        </div>
+      </main>
     </StyledApp>
   );
 };

@@ -2,8 +2,28 @@ import { createTheme, CssBaseline, ThemeProvider } from "@suid/material";
 import { createPalette } from "@suid/material/styles/createPalette";
 import { Accessor, createContext, createMemo, createSignal, ParentComponent, useContext } from "solid-js";
 
+type ColorShade = {
+  100: string;
+  200: string;
+  300: string;
+  400: string;
+  500: string;
+  600: string;
+  700: string;
+  800: string;
+  900: string;
+}
+
+export type Colors = {
+  grey: ColorShade;
+  primary: ColorShade;
+  greenAccent: ColorShade;
+  redAccent: ColorShade;
+  blueAccent: ColorShade;
+}
+
 // Color design tokens export
-export const tokens = (mode: "dark" | "light") => ({
+export const tokens = (mode: "dark" | "light"): Colors => ({
   ...(mode === "dark"
     ? {
       grey: {
