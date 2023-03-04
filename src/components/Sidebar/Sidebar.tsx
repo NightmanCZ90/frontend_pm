@@ -1,36 +1,26 @@
-import { Navigator, useLocation, useNavigate } from "@solidjs/router";
-import { DataSaverOff, ShowChart } from "@suid/icons-material";
-import { Component, JSX } from "solid-js";
+import { A, useLocation } from "@solidjs/router";
+import { Dashboard, DataSaverOff } from "@suid/icons-material";
+import { Button, Typography } from "@suid/material";
+import { Component, createSignal } from "solid-js";
+import { tokens, useThemeContext } from "../../styles/theme";
 
-import { StyledNavigationButton, StyledSidebar } from "./Sidebar.styles";
+import { StyledSidebar } from "./Sidebar.styles";
 
-type NavigationButtonProps = {
+type ItemProps = {
   icon: any;
   name: string;
-  navigate: Navigator;
-  pathname: string;
   route: string;
-  tooltipTitle: string;
 }
 
-const renderNavigationButton = ({ icon, name, navigate, pathname, route, tooltipTitle }: NavigationButtonProps) => {
-  const active = pathname === route;
-
-  const handlePageSelection: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    if (!active) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      route && navigate(route);
-    }
-  }
+const Item = ({ icon, name, route }: ItemProps) => {
+  const location = useLocation();
 
   return (
-    // <Tooltip title={tooltipTitle} placement="right" arrow>
-    <StyledNavigationButton title={tooltipTitle} name={name} onClick={handlePageSelection}>
-      {icon}
-    </StyledNavigationButton>
-    // </Tooltip>
+    <A href={route}>
+      <Button class={location.pathname === route ? 'active' : ''} fullWidth size="large" color="secondary" startIcon={icon}>
+        {name}
+      </Button>
+    </A>
   )
 }
 
@@ -39,16 +29,60 @@ interface ISidebarProps {
 }
 
 const Sidebar: Component<ISidebarProps> = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [mode] = useThemeContext();
+  const colors = () => tokens(mode());
+  const [isExpanded, setIsExpanded] = createSignal(true);
 
   return (
-    <StyledSidebar>
+    <StyledSidebar colors={colors()} isExpanded={isExpanded()}>
 
-      <div class="navigation-main">
-        {renderNavigationButton({ icon: <ShowChart />, name: 'home', navigate, pathname: location.pathname, route: '/', tooltipTitle: 'Dashboard' })}
-        {renderNavigationButton({ icon: <DataSaverOff />, name: 'portfolios', navigate, pathname: location.pathname, route: '/portfolios', tooltipTitle: 'Portfolios' })}
+      <Item
+        icon={<Dashboard />}
+        name="Dashboard"
+        route={"/"}
+      />
+
+      <div class="menu-section">
+        <Typography
+          variant="h6"
+          color={colors().grey[300]}
+        >
+          General
+        </Typography>
       </div>
+
+      <Item
+        icon={<DataSaverOff />}
+        name="Portfolios"
+        route={"/portfolios"}
+      />
+
+      <div class="menu-section">
+        <Typography
+          variant="h6"
+          color={colors().grey[300]}
+        >
+          Portfolios
+        </Typography>
+      </div>
+
+      <Item
+        icon={<DataSaverOff />}
+        name="Personal"
+        route={"/portfolios/personal"}
+      />
+
+      <Item
+        icon={<DataSaverOff />}
+        name="Managing"
+        route={"/portfolios/managing"}
+      />
+
+      <Item
+        icon={<DataSaverOff />}
+        name="Managed"
+        route={"/portfolios/managed"}
+      />
 
     </StyledSidebar>
   );

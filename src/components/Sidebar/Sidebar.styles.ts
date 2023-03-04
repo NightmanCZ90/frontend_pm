@@ -1,38 +1,36 @@
-import { IconButton } from '@suid/material';
+import { Box } from '@suid/material';
 import { styled } from 'solid-styled-components';
+import { Colors } from '../../styles/theme';
 
 interface IStyledSidebarProps {
-
+  colors: Colors;
+  isExpanded: boolean;
 }
 
-export const StyledSidebar = styled("div") <IStyledSidebarProps>`
-    position: sticky;
-    height: 100vh;
-    top: 0;
-    background-color: #423c3c;
-    width: 3.5rem;
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+export const StyledSidebar = styled(Box) <IStyledSidebarProps>`
+  background-color: ${props => props.colors?.primary[400]};
+  width: ${({ isExpanded }) => isExpanded ? '200px' : '60px'};
 
-    .navigation-main {
-      button {
-        margin-bottom: 0.5rem;
-      }
+    .menu-section {
+      padding: 15px 0 5px 20px;
     }
 
-    .navigation-user {
+    a {
+      text-decoration: none;
+
       button {
-        margin-top: 0.5rem;
+        border-radius: 0;
+        justify-content: flex-start;
+        padding: 16px 20px;
+
+        span.MuiButton-startIcon {
+          margin-right: 16px;
+        }
+
+        &.active {
+          color: ${props => props.colors?.greenAccent[200]};
+          background-color: ${props => props.colors?.greenAccent[800]};
+        }
       }
     }
-`;
-
-export const StyledNavigationButton = styled(IconButton)`
-  color: #fff;
-
-  &:hover {
-    color: #f9ba48;
-  }
 `;
