@@ -14,8 +14,9 @@ export const StyledApp = styled('div') <IStyledAppProps>`
     overflow: hidden;
     
     .content {
-      height: 100%;
-      overflow: scroll;
+      /* Topbar height */
+      height: calc(100% - 69px);
+      overflow-y: auto;
     }
   }
 `;
