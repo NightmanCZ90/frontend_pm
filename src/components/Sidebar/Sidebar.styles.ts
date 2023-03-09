@@ -9,17 +9,19 @@ interface IStyledSidebarProps {
 
 export const StyledSidebar = styled(Box) <IStyledSidebarProps>`
   background-color: ${props => props.colors?.primary[400]};
-  width: ${({ isExpanded }) => isExpanded ? '200px' : '64px'};
+  width: ${({ isExpanded }) => isExpanded ? '200px' : '66px'};
+  transition: all 0.5s;
+  overflow: hidden;
 
   .expand-button {
     display: flex;
     justify-content: flex-end;
-    padding: 10px;
+    padding: 8px;
   }
 
   .menu-section {
-    padding: 15px 0 5px 20px;
-    height: 42px;
+    padding: 5px 0 5px 20px;
+    height: 30px;
     display: flex;
     align-items: center;
 
@@ -43,6 +45,7 @@ export const StyledSidebar = styled(Box) <IStyledSidebarProps>`
       }
       span.button-label {
         margin-left: 16px;
+        height: 22px;
       }
 
       &.active {
