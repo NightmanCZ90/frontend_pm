@@ -2,7 +2,7 @@ import { Component } from 'solid-js';
 import { Route, Routes } from '@solidjs/router';
 
 import { StyledApp } from './App.styles';
-import Sidebar from './components/Sidebar';
+import Sidebar from './pages/globals/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Portfolios from './pages/Portfolios';
 import Topbar from './pages/globals/Topbar';

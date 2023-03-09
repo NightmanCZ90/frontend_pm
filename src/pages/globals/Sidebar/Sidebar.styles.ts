@@ -1,6 +1,6 @@
 import { Box } from '@suid/material';
 import { styled } from 'solid-styled-components';
-import { Colors } from '../../styles/theme';
+import { Colors } from '../../../styles/theme';
 
 interface IStyledSidebarProps {
   colors: Colors;
