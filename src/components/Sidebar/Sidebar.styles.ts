@@ -9,28 +9,46 @@ interface IStyledSidebarProps {
 
 export const StyledSidebar = styled(Box) <IStyledSidebarProps>`
   background-color: ${props => props.colors?.primary[400]};
-  width: ${({ isExpanded }) => isExpanded ? '200px' : '60px'};
+  width: ${({ isExpanded }) => isExpanded ? '200px' : '64px'};
 
-    .menu-section {
-      padding: 15px 0 5px 20px;
+  .expand-button {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+
+  .menu-section {
+    padding: 15px 0 5px 20px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+
+    .break {
+      height: 2px;
+      width: 24px;
+      background-color: ${props => props.colors?.grey[300]};
     }
+  }
 
-    a {
-      text-decoration: none;
+  a {
+    text-decoration: none;
 
-      button {
-        border-radius: 0;
-        justify-content: flex-start;
-        padding: 16px 20px;
+    button {
+      border-radius: 0;
+      justify-content: flex-start;
+      padding: 16px 20px;
 
-        span.MuiButton-startIcon {
-          margin-right: 16px;
-        }
+      span.MuiButton-startIcon {
+        margin: 0;
+      }
+      span.button-label {
+        margin-left: 16px;
+      }
 
-        &.active {
-          color: ${props => props.colors?.greenAccent[200]};
-          background-color: ${props => props.colors?.greenAccent[800]};
-        }
+      &.active {
+        color: ${props => props.colors?.greenAccent[200]};
+        background-color: ${props => props.colors?.greenAccent[800]};
       }
     }
+  }
 `;
