@@ -2,14 +2,29 @@ import { createTheme, CssBaseline, ThemeProvider } from "@suid/material";
 import { createPalette } from "@suid/material/styles/createPalette";
 import { Accessor, createContext, createMemo, createSignal, ParentComponent, useContext } from "solid-js";
 
-export enum ThemeMode {
-  Dark = 'dark',
-  Light = 'light',
+type ColorShade = {
+  100: string;
+  200: string;
+  300: string;
+  400: string;
+  500: string;
+  600: string;
+  700: string;
+  800: string;
+  900: string;
+}
+
+export type Colors = {
+  grey: ColorShade;
+  primary: ColorShade;
+  greenAccent: ColorShade;
+  redAccent: ColorShade;
+  blueAccent: ColorShade;
 }
 
 // Color design tokens export
-export const tokens = (mode: ThemeMode) => ({
-  ...(mode === ThemeMode.Dark
+export const tokens = (mode: "dark" | "light"): Colors => ({
+  ...(mode === "dark"
     ? {
       grey: {
         100: "#e0e0e0",
@@ -127,12 +142,12 @@ export const tokens = (mode: ThemeMode) => ({
 });
 
 // MUI theme settings
-export const themeSettings = (mode: ThemeMode) => {
+export const themeSettings = (mode: "dark" | "light") => {
   const colors = tokens(mode);
   return {
     palette: {
       mode: mode,
-      ...(mode === ThemeMode.Dark
+      ...(mode === "dark"
         ? {
           // Palette values for dark mode
           primary: {
@@ -200,34 +215,34 @@ export const themeSettings = (mode: ThemeMode) => {
 };
 
 type ThemeContextValue = [
-  Accessor<ThemeMode>,
-  () => void
+  Accessor<"dark" | "light">,
+  () => void,
 ];
 
 // Context for color mode
 export const ThemeContext = createContext<ThemeContextValue>([
-  () => ThemeMode.Dark,
-  () => undefined
+  (() => "dark") as Accessor<"dark" | "light">,
+  () => undefined,
 ]);
 
 
 export const CustomThemeProvider: ParentComponent = (props) => {
-  const [mode, setMode] = createSignal<ThemeMode>(ThemeMode.Dark)
+  const [mode, setMode] = createSignal<"dark" | "light">("dark");
 
-  const toggleColorMode = () => setMode((prev) => (prev === ThemeMode.Light ? ThemeMode.Dark : ThemeMode.Light));
+  const toggleColorMode = () => setMode((prev) => (prev === "light" ? "dark" : "light"));
 
-  const settings = themeSettings(mode())
+  const settings = () => themeSettings(mode());
 
   const palette = createMemo(() =>
     createPalette({
-      ...(settings.palette),
-      mode: mode() === ThemeMode.Dark ? "dark" : "light",
+      ...(settings().palette),
+      mode: mode() === "dark" ? "dark" : "light",
     })
   );
 
   const theme = createTheme({
     palette,
-    typography: settings.typography
+    typography: settings().typography
   });
 
   return (
@@ -237,8 +252,8 @@ export const CustomThemeProvider: ParentComponent = (props) => {
         {props.children}
       </ThemeProvider>
     </ThemeContext.Provider>
-  )
+  );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+export const useThemeContext = () => useContext(ThemeContext);
 
