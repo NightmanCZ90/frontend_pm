@@ -10,7 +10,7 @@ interface IStyledSidebarProps {
 export const StyledSidebar = styled(Box) <IStyledSidebarProps>`
   background-color: ${props => props.colors?.primary[400]};
   width: ${({ isExpanded }) => isExpanded ? '200px' : '66px'};
-  transition: all 0.5s;
+  transition: width 0.3s ease-in-out;
   overflow: hidden;
 
   .expand-button {
