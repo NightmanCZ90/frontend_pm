@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import { StyledDashboard } from "./Dashboard.styles";
 
 const Dashboard: Component = () => {
+
   return (
     <StyledDashboard class="Dashboard">
       <div class="header-content">
