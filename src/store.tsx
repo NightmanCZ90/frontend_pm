@@ -32,7 +32,7 @@ interface IStoreProvider {
 
 }
 export const StoreProvider: ParentComponent<IStoreProvider> = (props) => {
-  const [state, setState] = createStore(storeState)
+  const [state, setState] = createStore(storeState);
 
   return (
     <StoreContext.Provider value={[state, mapReducers(storeReducers, setState)]}>
@@ -40,7 +40,6 @@ export const StoreProvider: ParentComponent<IStoreProvider> = (props) => {
     </StoreContext.Provider>
   );
 };
-
 
 export const useStore = () => useContext(StoreContext);
 
