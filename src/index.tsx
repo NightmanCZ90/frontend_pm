@@ -5,6 +5,7 @@ import { Router } from '@solidjs/router';
 import './index.css';
 import App from './App';
 import { CustomThemeProvider } from './styles/theme';
+import { StoreProvider } from './store';
 
 const root = document.getElementById('root');
 
@@ -16,8 +17,10 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(() => (
   <CustomThemeProvider>
-    <Router>
-      <App />
-    </Router>
+    <StoreProvider>
+      <Router>
+        <App />
+      </Router>
+    </StoreProvider>
   </CustomThemeProvider>
 ), root!);
