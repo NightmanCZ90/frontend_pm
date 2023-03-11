@@ -6,8 +6,10 @@ import Sidebar from './pages/globals/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Portfolios from './pages/Portfolios';
 import Topbar from './pages/globals/Topbar';
+import useAxiosPrivate from './hooks/useAxiosPrivate';
 
 const App: Component = () => {
+  useAxiosPrivate();
 
   return (
     <StyledApp>
