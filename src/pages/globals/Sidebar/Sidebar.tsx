@@ -39,7 +39,6 @@ const Sidebar: Component<ISidebarProps> = () => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
   const [isExpanded, setIsExpanded] = createSignal(true);
-  const { auth } = useSelector();
 
   const pathname = () => location.pathname;
 
@@ -115,14 +114,6 @@ const Sidebar: Component<ISidebarProps> = () => {
         pathname={pathname}
         route={"/portfolios/managed"}
       />
-
-      <Show when={auth.login}>
-        Is Logged in
-      </Show>
-
-      <div>
-        {auth.currentUser}
-      </div>
 
     </StyledSidebar>
   );

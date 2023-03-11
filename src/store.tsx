@@ -1,51 +1,8 @@
 import { createContext, ParentComponent, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
+import { storeReducers, storeState } from "./models";
 
-type AuthState = {
-  login: boolean;
-  currentUser: string;
-}
-
-const auth = {
-  state: {
-    login: false,
-    currentUser: '',
-  } as AuthState,
-  reducers: {
-    setLogin: (login: boolean) => ((state?: AuthState) => ({ ...state, login }))(),
-    setCurrentUser: (currentUser: string) => ((state?: AuthState) => ({ ...state, currentUser }))(),
-  },
-}
-
-type PortfoliosState = {
-  personal: any[];
-}
-
-const portfolios = {
-  state: {
-    personal: []
-  } as PortfoliosState,
-  reducers: {
-    setPersonal: (personal: any[], state?: PortfoliosState) => ({ ...state, personal })
-  },
-}
-
-export interface RootModel {
-  auth: typeof auth;
-  portfolios: typeof portfolios;
-}
-
-const mappedState = {
-  auth: auth.state,
-  portfolios: portfolios.state,
-}
-
-const mappedReducers = {
-  auth: auth.reducers!,
-  portfolios: portfolios.reducers!,
-};
-
-function mapReducers(reducers: typeof mappedReducers, setState: SetStoreFunction<typeof mappedState>) {
+function mapReducers(reducers: typeof storeReducers, setState: SetStoreFunction<typeof storeState>) {
   return Object.fromEntries(
     Object.entries(reducers).map(([modelName, modelReducers]) => {
       if (modelReducers) {
@@ -61,23 +18,23 @@ function mapReducers(reducers: typeof mappedReducers, setState: SetStoreFunction
 }
 
 type StoreContextValue = [
-  typeof mappedState,
-  typeof mappedReducers
+  typeof storeState,
+  typeof storeReducers
 ];
 
 export const StoreContext = createContext<StoreContextValue>([
-  mappedState,
-  mappedReducers
+  storeState,
+  storeReducers
 ]);
 
 interface IStoreProvider {
 
 }
 export const StoreProvider: ParentComponent<IStoreProvider> = (props) => {
-  const [state, setState] = createStore(mappedState)
+  const [state, setState] = createStore(storeState)
 
   return (
-    <StoreContext.Provider value={[state, mapReducers(mappedReducers, setState)]}>
+    <StoreContext.Provider value={[state, mapReducers(storeReducers, setState)]}>
       {props.children}
     </StoreContext.Provider>
   );
