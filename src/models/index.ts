@@ -14,3 +14,7 @@ export const storeReducers = {
   auth: auth.reducers!,
   // portfolios: portfolios.reducers!,
 };
+
+export const storeEffects = {
+  auth: auth.effects,
+}

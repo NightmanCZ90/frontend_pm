@@ -1,6 +1,6 @@
 import { createContext, ParentComponent, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
-import { storeReducers, storeState } from "./models";
+import { storeEffects, storeReducers, storeState } from "./models";
 
 // Maps over reducers and sets setState function
 function mapReducers(reducers: typeof storeReducers, setState: SetStoreFunction<typeof storeState>) {
@@ -17,25 +17,55 @@ function mapReducers(reducers: typeof storeReducers, setState: SetStoreFunction<
     })
   )
 }
+// Maps over effects and passes dispatch function
+function mapEffects(effects: typeof storeEffects, dispatch: typeof storeReducers) {
+  return Object.fromEntries(
+    Object.entries(effects).map(([modelName, modelEffects]) => {
+      if (modelEffects) {
+        return [modelName, Object.fromEntries(
+          // @ts-ignore
+          Object.entries(modelEffects).map(([effectName, effect]) => [effectName, (args: any) => effect(args, dispatch)])
+        )]
+      }
+      return [modelName,]
+    })
+  )
+}
+
+// Puts reducers and effects together
+function mapDispatch(reducers: typeof storeReducers, effects: typeof storeEffects) {
+  const mapped = Object.assign({}, reducers) as typeof storeReducers & typeof storeEffects;
+
+  Object.entries(effects).map(([modelName, modelEffects]) => {
+    // @ts-ignore
+    mapped[modelName] = { ...mapped[modelName], ...modelEffects };
+  });
+
+  return mapped;
+}
 
 type StoreContextValue = [
   typeof storeState,
-  typeof storeReducers
+  typeof storeReducers & typeof storeEffects,
 ];
 
 export const StoreContext = createContext<StoreContextValue>([
   storeState,
-  storeReducers
+  mapDispatch(storeReducers, storeEffects),
 ]);
 
 interface IStoreProvider {
 
 }
 export const StoreProvider: ParentComponent<IStoreProvider> = (props) => {
-  const [state, setState] = createStore(storeState);
+  const [state, setState] = createStore(storeState)
+
+  const mappedReducers = mapReducers(storeReducers, setState);
+  const mappedEffects = mapEffects(storeEffects, mappedReducers);
+  const mappedDispatch = mapDispatch(mappedReducers, mappedEffects);
 
   return (
-    <StoreContext.Provider value={[state, mapReducers(storeReducers, setState)]}>
+    <StoreContext.Provider value={[state, mappedDispatch]}>
       {props.children}
     </StoreContext.Provider>
   );
@@ -50,8 +80,8 @@ export const useSelector = () => {
 }
 
 export const useDispatch = () => {
-  const [_, reducers] = useContext(StoreContext);
+  const [_state, dispatch] = useContext(StoreContext);
 
-  return reducers;
+  return dispatch;
 }
 
