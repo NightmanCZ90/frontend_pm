@@ -4,9 +4,11 @@ import { IconButton } from "@suid/material";
 
 import { useThemeContext } from "../../../styles/theme";
 import { StyledTopbar } from "./Topbar.styles";
+import { useDispatch } from "../../../store";
 
 const Topbar: Component = () => {
   const [mode, toggleColorMode] = useThemeContext();
+  const dispatch = useDispatch();
 
   return (
     <StyledTopbar>
@@ -29,6 +31,8 @@ const Topbar: Component = () => {
         <IconButton>
           <PersonOutlined />
         </IconButton>
+
+        <button onClick={dispatch.auth.signOut}>Sign out</button>
 
       </div>
     </StyledTopbar>

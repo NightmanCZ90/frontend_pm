@@ -1,11 +1,11 @@
 import { Component, createEffect, createResource, createSignal, Setter } from "solid-js";
-import RestApiClient from "../../services/RestApiClient";
 import { useDispatch } from "../../store";
 
 async function signIn() {
-  const res = await RestApiClient.signIn({ email: 'test@test.com', password: 'heslo' });
-  console.log('res: ', res);
-  return res;
+  const dispatch = useDispatch();
+  const tokens = await dispatch.auth.signIn({ email: 'test@test.com', password: 'heslo' });
+
+  return tokens;
 }
 
 interface ISignInProps {
@@ -15,10 +15,9 @@ interface ISignInProps {
 const SignIn: Component<ISignInProps> = (props) => {
   const [trigger, setTrigger] = createSignal(false)
   const [tokens] = createResource(trigger, signIn);
-  const dispatch = useDispatch();
 
   createEffect(() => {
-    dispatch.auth.setTokens(tokens() || null)
+    console.log(tokens.loading);
   });
 
   return (

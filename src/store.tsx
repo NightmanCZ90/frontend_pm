@@ -1,9 +1,9 @@
 import { createContext, ParentComponent, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
-import { storeEffects, storeReducers, storeState } from "./models";
+import { Dispatch, StoreEffects, storeEffects, StoreReducers, storeReducers, StoreState, storeState } from "./models";
 
 // Maps over reducers and sets setState function
-function mapReducers(reducers: typeof storeReducers, setState: SetStoreFunction<typeof storeState>) {
+function mapReducers(reducers: StoreReducers, setState: SetStoreFunction<StoreState>) {
   return Object.fromEntries(
     Object.entries(reducers).map(([modelName, modelReducers]) => {
       if (modelReducers) {
@@ -18,7 +18,7 @@ function mapReducers(reducers: typeof storeReducers, setState: SetStoreFunction<
   )
 }
 // Maps over effects and passes dispatch function
-function mapEffects(effects: typeof storeEffects, dispatch: typeof storeReducers) {
+function mapEffects(effects: StoreEffects, dispatch: StoreReducers) {
   return Object.fromEntries(
     Object.entries(effects).map(([modelName, modelEffects]) => {
       if (modelEffects) {
@@ -33,8 +33,8 @@ function mapEffects(effects: typeof storeEffects, dispatch: typeof storeReducers
 }
 
 // Puts reducers and effects together
-function mapDispatch(reducers: typeof storeReducers, effects: typeof storeEffects) {
-  const mapped = Object.assign({}, reducers) as typeof storeReducers & typeof storeEffects;
+function mapDispatch(reducers: StoreReducers, effects: StoreEffects) {
+  const mapped = Object.assign({}, reducers) as Dispatch;
 
   Object.entries(effects).map(([modelName, modelEffects]) => {
     // @ts-ignore
@@ -45,8 +45,8 @@ function mapDispatch(reducers: typeof storeReducers, effects: typeof storeEffect
 }
 
 type StoreContextValue = [
-  typeof storeState,
-  typeof storeReducers & typeof storeEffects,
+  StoreState,
+  Dispatch,
 ];
 
 export const StoreContext = createContext<StoreContextValue>([

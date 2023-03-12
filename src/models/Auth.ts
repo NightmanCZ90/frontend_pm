@@ -1,3 +1,5 @@
+import { storeReducers } from ".";
+import RestApiClient from "../services/RestApiClient";
 import { Tokens, User } from "../types";
 
 type AuthState = {
@@ -14,4 +16,19 @@ export const auth = {
     setCurrentUser: (currentUser: User | null) => ((state?: AuthState) => ({ ...state, currentUser }))(),
     setTokens: (tokens: Tokens | null) => ((state?: AuthState) => ({ ...state, tokens }))(),
   },
+  effects: {
+    async signIn({ email, password }: { email: string, password: string }, dispatch?: any) {
+      const tokens = await RestApiClient.signIn({ email, password });
+      if (tokens) {
+        localStorage.setItem('jwt_token', JSON.stringify(tokens));
+        (dispatch as typeof storeReducers).auth.setTokens(tokens);
+      }
+      return tokens;
+    },
+
+    signOut(_payload: any, dispatch?: any) {
+      localStorage.removeItem('jwt_token');
+      window.location.reload();
+    }
+  }
 }

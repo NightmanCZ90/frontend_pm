@@ -18,3 +18,9 @@ export const storeReducers = {
 export const storeEffects = {
   auth: auth.effects,
 }
+
+export type StoreState = typeof storeState;
+export type StoreReducers = typeof storeReducers;
+export type StoreEffects = typeof storeEffects;
+
+export type Dispatch = StoreReducers & StoreEffects;

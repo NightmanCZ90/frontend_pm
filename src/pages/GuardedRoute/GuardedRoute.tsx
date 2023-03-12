@@ -13,6 +13,8 @@ const GuardedRoute: Component<IGuardedRouteProps & RouteProps<string>> = ({ comp
 
   const [showLogin, setShowLogin] = createSignal(false);
 
+  // TODO: Refactor to Admin guard or customizable guard
+
   // Show either signin page or signup page
   const renderFallback = () => showLogin()
     ? <SignIn setShowLogin={setShowLogin} />

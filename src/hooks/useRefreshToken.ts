@@ -16,8 +16,7 @@ const useRefreshToken = () => {
       }
       return response?.data?.accessToken;
     } catch (err) {
-      // TODO: Implement signout
-      // signout();
+      dispatch.auth.signOut(undefined);
     }
   }
   return refresh;
