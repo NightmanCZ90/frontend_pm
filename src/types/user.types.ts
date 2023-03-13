@@ -1,3 +1,8 @@
+export type Tokens = {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export enum Role {
   Administrator = 'administrator',
   PortfolioManager = 'portfolioManager',
