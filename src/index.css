@@ -52,4 +52,6 @@ code {
   /* Colors */
   --colorBackground: #303030;
   --colorText: #fff;
+
+  --colorError: #f44336;
 }
