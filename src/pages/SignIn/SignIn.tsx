@@ -3,6 +3,7 @@ import { Button, CircularProgress, TextField, Typography } from "@suid/material"
 import { Component, createResource, createSignal, For, Setter } from "solid-js";
 import { useDispatch } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
+import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignIn, StyledSignInForm } from "./SignIn.styles";
 
 async function signIn(payload: LoginForm | null) {
@@ -28,7 +29,7 @@ const SignIn: Component<ISignInProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const loginForm = createForm<LoginForm>();
+  const loginForm = createForm<LoginForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<LoginForm | null>(null);
 
   const [authentication] = createResource(formData, (e) => signIn(e));
@@ -58,21 +59,15 @@ const SignIn: Component<ISignInProps> = (props) => {
           >
             {(field) =>
               <TextField
-                {...field.props}
+                inputProps={{ ...remapFieldProps(field.props) }}
                 type="email"
                 color="secondary"
-                // Need to overwrite onInput and onChange props for Modular Forms and SUID to comunicate together
-                onInput={() => undefined}
-                onChange={e => {
-                  field.props.onInput(e as any);
-                  field.props.onChange(e)
-                }}
                 variant="outlined"
-                component="input"
                 label="E-mail"
                 required
                 error={Boolean(field.error)}
                 helperText={field.error}
+                value={field.value || ''}
               />}
           </Field>
 
@@ -81,23 +76,15 @@ const SignIn: Component<ISignInProps> = (props) => {
             name="password"
             validate={[
               required('Please enter your password.'),
-              // TODO: Put this to sign Up
-              // minLength(8, 'Your password must have 8 characters or more.')
             ]}
           >
             {(field) =>
               <TextField
-                {...field.props}
+                inputProps={{ ...remapFieldProps(field.props) }}
+                onChange={e => console.log(e)}
                 type="password"
                 color="secondary"
-                // Need to overwrite onInput and onChange props for Modular Forms and SUID to comunicate together
-                onInput={() => undefined}
-                onChange={e => {
-                  field.props.onInput(e as any);
-                  field.props.onChange(e)
-                }}
                 variant="outlined"
-                component="input"
                 label="Password"
                 required
                 error={Boolean(field.error)}

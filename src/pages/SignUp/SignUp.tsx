@@ -3,6 +3,7 @@ import { Button, CircularProgress, TextField, Typography } from "@suid/material"
 import { Component, createResource, createSignal, For, Setter } from "solid-js";
 import { useDispatch } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
+import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignUp, StyledSignUpForm } from "./SignUp.styles";
 
 async function signUp(payload: RegisterForm | null) {
@@ -29,7 +30,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const registerForm = createForm<RegisterForm>();
+  const registerForm = createForm<RegisterForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<RegisterForm | null>(null);
 
   const [registration] = createResource(formData, (e) => signUp(e));
@@ -59,17 +60,10 @@ const SignUp: Component<ISignUpProps> = (props) => {
           >
             {(field) =>
               <TextField
-                {...field.props}
+                inputProps={{ ...remapFieldProps(field.props) }}
                 type="email"
                 color="secondary"
-                // Need to overwrite onInput and onChange props for Modular Forms and SUID to comunicate together
-                onInput={() => undefined}
-                onChange={e => {
-                  field.props.onInput(e as any);
-                  field.props.onChange(e)
-                }}
                 variant="outlined"
-                component="input"
                 label="E-mail"
                 required
                 error={Boolean(field.error)}
@@ -87,17 +81,10 @@ const SignUp: Component<ISignUpProps> = (props) => {
           >
             {(field) =>
               <TextField
-                {...field.props}
+                inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
                 color="secondary"
-                // Need to overwrite onInput and onChange props for Modular Forms and SUID to comunicate together
-                onInput={() => undefined}
-                onChange={e => {
-                  field.props.onInput(e as any);
-                  field.props.onChange(e)
-                }}
                 variant="outlined"
-                component="input"
                 label="Password"
                 required
                 error={Boolean(field.error)}
@@ -114,17 +101,10 @@ const SignUp: Component<ISignUpProps> = (props) => {
           >
             {(field) =>
               <TextField
-                {...field.props}
+                inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
                 color="secondary"
-                // Need to overwrite onInput and onChange props for Modular Forms and SUID to comunicate together
-                onInput={() => undefined}
-                onChange={e => {
-                  field.props.onInput(e as any);
-                  field.props.onChange(e)
-                }}
                 variant="outlined"
-                component="input"
                 label="Confirm password"
                 required
                 error={Boolean(field.error)}
