@@ -6,12 +6,8 @@ import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignIn, StyledSignInForm } from "./SignIn.styles";
 
-async function signIn(payload: LoginForm | null) {
+async function signIn(payload: LoginForm) {
   const dispatch = useDispatch();
-
-  if (!payload) {
-    return;
-  }
 
   return dispatch.auth.signIn({ email: payload.email, password: payload.password });
 }
@@ -32,7 +28,7 @@ const SignIn: Component<ISignInProps> = (props) => {
   const loginForm = createForm<LoginForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<LoginForm | null>(null);
 
-  const [authentication] = createResource(formData, (e) => signIn(e));
+  const [authentication] = createResource(formData, signIn);
 
   const handleSubmit = (values: LoginForm, event: SubmitEvent) => {
     event.preventDefault();

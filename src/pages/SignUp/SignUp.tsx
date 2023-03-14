@@ -6,12 +6,8 @@ import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignUp, StyledSignUpForm } from "./SignUp.styles";
 
-async function signUp(payload: RegisterForm | null) {
+async function signUp(payload: RegisterForm) {
   const dispatch = useDispatch();
-
-  if (!payload) {
-    return;
-  }
 
   return dispatch.auth.signUp({ email: payload.email, password: payload.password, confirmPassword: payload.confirmPassword });
 }
@@ -33,7 +29,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
   const registerForm = createForm<RegisterForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<RegisterForm | null>(null);
 
-  const [registration] = createResource(formData, (e) => signUp(e));
+  const [registration] = createResource(formData, signUp);
 
   const handleSubmit = (values: RegisterForm, event: SubmitEvent) => {
     event.preventDefault();
