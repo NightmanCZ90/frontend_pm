@@ -81,7 +81,6 @@ const SignIn: Component<ISignInProps> = (props) => {
             {(field) =>
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
-                onChange={e => console.log(e)}
                 type="password"
                 color="secondary"
                 variant="outlined"
