@@ -44,6 +44,14 @@ export const auth = {
     signOut(_payload: any, dispatch?: any) {
       localStorage.removeItem('jwt_token');
       window.location.reload();
+    },
+
+    async getCurrentUser(_payload: any, dispatch?: any) {
+      const currentUser = await RestApiClient.getCurrentUser();
+
+      if (currentUser) {
+        (dispatch as typeof storeReducers).auth.setCurrentUser(currentUser);
+      }
     }
   }
 }

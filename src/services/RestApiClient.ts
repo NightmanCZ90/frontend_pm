@@ -1,4 +1,4 @@
-import { Tokens } from '../types';
+import { Tokens, User } from '../types';
 import ApiClient from './ApiClient';
 import { BASE_URL } from './axios';
 
@@ -47,12 +47,12 @@ class RestApiClient extends ApiClient {
   //   })
   // }
 
-  // async getCurrentUser() {
-  //   return this.axiosRequest<User>({
-  //     url: '/users/current',
-  //     method: 'GET'
-  //   })
-  // }
+  async getCurrentUser() {
+    return this.axiosRequest<User>({
+      url: '/users/current',
+      method: 'GET'
+    })
+  }
 
   // async updateUser(userId: number, body: {
   //   firstName: string,
