@@ -10,9 +10,11 @@ import useAxiosPrivate from './hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from './store';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import useBootstrap from './hooks/useBootstrap';
 
 const App: Component = () => {
   useAxiosPrivate();
+  useBootstrap();
 
   const { auth } = useSelector();
   const dispatch = useDispatch();

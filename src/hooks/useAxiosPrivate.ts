@@ -1,4 +1,4 @@
-import { createEffect, onCleanup } from 'solid-js';
+import { onCleanup } from 'solid-js';
 
 import { axiosPrivate } from '../services/axios';
 import { useSelector } from '../store';
