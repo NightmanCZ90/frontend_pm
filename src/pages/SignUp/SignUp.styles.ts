@@ -27,7 +27,7 @@ export const StyledSignUpForm = styled(Box) <IStyledSignUpFormProps>`
     flex-direction: column;
     gap: 1rem;
 
-    .signup-form--buttons {
+    .signup-form-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 2rem;

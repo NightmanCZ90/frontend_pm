@@ -27,12 +27,12 @@ export const StyledSignInForm = styled(Box) <IStyledSignInFormProps>`
     flex-direction: column;
     gap: 1rem;
 
-    .signin-form--button {
+    .signin-form-button {
       display: flex;
       margin-top: 2rem;
     }
 
-    .signin-form--buttons {
+    .signin-form-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 2rem;

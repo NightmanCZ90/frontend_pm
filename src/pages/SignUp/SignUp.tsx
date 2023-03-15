@@ -116,7 +116,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
               : <span class="error-message">{registration.error?.message}</span>
             : null}
 
-          <div class="signup-form--buttons">
+          <div class="signup-form-buttons">
             <Button color="secondary" onClick={() => props.setShowLogin(true)}>Already have an account?</Button>
 
             <Button

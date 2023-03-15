@@ -87,7 +87,7 @@ const SignIn: Component<ISignInProps> = (props) => {
               />}
           </Field>
 
-          <div class="signin-form--button">
+          <div class="signin-form-button">
             <Button
               type="submit"
               fullWidth
@@ -107,7 +107,7 @@ const SignIn: Component<ISignInProps> = (props) => {
               : <span class="error-message">{authentication.error?.message}</span>
             : null}
 
-          <div class="signin-form--buttons">
+          <div class="signin-form-buttons">
             <Button color="secondary" onClick={() => props.setShowLogin(false)}>Create new account</Button>
 
             {/* For testing purposes - faster signin */}
