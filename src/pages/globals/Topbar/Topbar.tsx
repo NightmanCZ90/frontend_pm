@@ -5,8 +5,10 @@ import { IconButton, Menu, MenuItem } from "@suid/material";
 import { useThemeContext } from "../../../styles/theme";
 import { StyledTopbar } from "./Topbar.styles";
 import { useDispatch } from "../../../store";
+import { useNavigate } from "@solidjs/router";
 
 const Topbar: Component = () => {
+  const navigate = useNavigate();
   const [mode, toggleColorMode] = useThemeContext();
   const dispatch = useDispatch();
 
@@ -14,6 +16,11 @@ const Topbar: Component = () => {
 
   const openUserMenu = () => Boolean(anchorEl());
   const closeUserMenu = () => setAnchorEl(null);
+
+  const handleUserAccountClick = () => {
+    navigate('/user-account');
+    closeUserMenu();
+  }
 
   return (
     <StyledTopbar>
@@ -47,8 +54,12 @@ const Topbar: Component = () => {
           open={openUserMenu()}
           onClose={closeUserMenu}
         >
-          <MenuItem onClick={closeUserMenu}>My account</MenuItem>
-          <MenuItem onClick={dispatch.auth.signOut}>Sign out</MenuItem>
+          <MenuItem onClick={handleUserAccountClick}>
+            My account
+          </MenuItem>
+          <MenuItem onClick={dispatch.auth.signOut}>
+            Sign out
+          </MenuItem>
         </Menu>
 
       </div>
