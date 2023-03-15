@@ -58,10 +58,11 @@ const SignUp: Component<ISignUpProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="email"
+                label="E-mail"
                 color="secondary"
                 variant="outlined"
-                label="E-mail"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
@@ -79,10 +80,11 @@ const SignUp: Component<ISignUpProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
+                label="Password"
                 color="secondary"
                 variant="outlined"
-                label="Password"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
@@ -99,10 +101,11 @@ const SignUp: Component<ISignUpProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
+                label="Confirm password"
                 color="secondary"
                 variant="outlined"
-                label="Confirm password"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
