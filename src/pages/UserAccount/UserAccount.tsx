@@ -1,4 +1,4 @@
-import { createForm, Field, Form, setValue } from "@modular-forms/solid";
+import { createForm, Field, Form, required, setValue } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField } from "@suid/material";
 import { Component, createEffect, createResource, createSignal, For } from "solid-js";
 import Header from "../../components/Header";
@@ -58,7 +58,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
             of={userAccountForm}
             name="firstName"
             validate={[
-
+              required('Please enter you first name.'),
             ]}
           >
             {(field) =>
@@ -77,7 +77,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
             of={userAccountForm}
             name="lastName"
             validate={[
-
+              required('Please enter you last name.'),
             ]}
           >
             {(field) =>
