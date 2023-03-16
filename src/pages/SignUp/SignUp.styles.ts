@@ -27,6 +27,10 @@ export const StyledSignUpForm = styled(Box) <IStyledSignUpFormProps>`
     flex-direction: column;
     gap: 1rem;
 
+    div.MuiInputBase-root {
+      background-color: ${props => props.colors?.primary[500]};
+    }
+
     .signup-form-buttons {
       display: flex;
       justify-content: space-between;

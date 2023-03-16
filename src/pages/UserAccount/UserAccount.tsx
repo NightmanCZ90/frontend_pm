@@ -35,7 +35,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
   createEffect(() => {
     setValue(userAccountForm, 'firstName', auth.currentUser?.firstName || '');
     setValue(userAccountForm, 'lastName', auth.currentUser?.lastName || '');
-  })
+  });
 
   const userTitle = () => auth.currentUser?.email || 'User Account';
 
@@ -52,7 +52,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
         <Header title={userTitle} subtitle="Manage your account here" />
       </div>
 
-      <StyledUserAccountContent class="UserAccountContent">
+      <StyledUserAccountContent class="UserAccountContent" colors={colors()}>
         <Form of={userAccountForm} onSubmit={handleSubmit}>
           <Field
             of={userAccountForm}
@@ -66,7 +66,6 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
                 inputProps={{ ...remapFieldProps(field.props) }}
                 label="First name"
                 color="secondary"
-                sx={{ backgroundColor: colors().primary[400] }}
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -86,7 +85,6 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
                 inputProps={{ ...remapFieldProps(field.props) }}
                 label="Last name"
                 color="secondary"
-                sx={{ backgroundColor: colors().primary[400] }}
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}

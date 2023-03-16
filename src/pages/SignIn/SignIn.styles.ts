@@ -27,6 +27,10 @@ export const StyledSignInForm = styled(Box) <IStyledSignInFormProps>`
     flex-direction: column;
     gap: 1rem;
 
+    div.MuiInputBase-root {
+      background-color: ${props => props.colors?.primary[500]};
+    }
+
     .signin-form-button {
       display: flex;
       margin-top: 2rem;
