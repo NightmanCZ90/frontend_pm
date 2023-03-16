@@ -6,12 +6,8 @@ import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignIn, StyledSignInForm } from "./SignIn.styles";
 
-async function signIn(payload: LoginForm | null) {
+async function signIn(payload: LoginForm) {
   const dispatch = useDispatch();
-
-  if (!payload) {
-    return;
-  }
 
   return dispatch.auth.signIn({ email: payload.email, password: payload.password });
 }
@@ -32,7 +28,7 @@ const SignIn: Component<ISignInProps> = (props) => {
   const loginForm = createForm<LoginForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<LoginForm | null>(null);
 
-  const [authentication] = createResource(formData, (e) => signIn(e));
+  const [authentication] = createResource(formData, signIn);
 
   const handleSubmit = (values: LoginForm, event: SubmitEvent) => {
     event.preventDefault();
@@ -61,13 +57,13 @@ const SignIn: Component<ISignInProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="email"
+                label="E-mail"
                 color="secondary"
                 variant="outlined"
-                label="E-mail"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
-                value={field.value || ''}
               />}
           </Field>
 
@@ -82,16 +78,17 @@ const SignIn: Component<ISignInProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
+                label="Password"
                 color="secondary"
                 variant="outlined"
-                label="Password"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
           </Field>
 
-          <div class="signin-form--button">
+          <div class="signin-form-button">
             <Button
               type="submit"
               fullWidth
@@ -111,7 +108,7 @@ const SignIn: Component<ISignInProps> = (props) => {
               : <span class="error-message">{authentication.error?.message}</span>
             : null}
 
-          <div class="signin-form--buttons">
+          <div class="signin-form-buttons">
             <Button color="secondary" onClick={() => props.setShowLogin(false)}>Create new account</Button>
 
             {/* For testing purposes - faster signin */}

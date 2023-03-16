@@ -4,7 +4,7 @@ import { tokens, useThemeContext } from "../../styles/theme";
 import { StyledHeader } from "./Header.styles";
 
 interface IHeaderProps {
-  title: string;
+  title: string | (() => string);
   subtitle: string;
 }
 

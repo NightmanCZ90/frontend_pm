@@ -10,9 +10,12 @@ import useAxiosPrivate from './hooks/useAxiosPrivate';
 import { useDispatch, useSelector } from './store';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import useBootstrap from './hooks/useBootstrap';
+import UserAccount from './pages/UserAccount';
 
 const App: Component = () => {
   useAxiosPrivate();
+  useBootstrap();
 
   const { auth } = useSelector();
   const dispatch = useDispatch();
@@ -37,6 +40,7 @@ const App: Component = () => {
             <Routes>
               <Route path={'/'} element={<Dashboard />} />
               <Route path={'/portfolios'} element={<Portfolios />} />
+              <Route path={'/user-account'} element={<UserAccount />} />
             </Routes>
           </div>
         </main>

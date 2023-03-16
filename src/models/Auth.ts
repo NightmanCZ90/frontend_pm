@@ -1,6 +1,9 @@
-import { storeReducers } from ".";
+import { LoginForm } from "../pages/SignIn/SignIn";
+import { RegisterForm } from "../pages/SignUp/SignUp";
+import { UserAccountForm } from "../pages/UserAccount/UserAccount";
 import RestApiClient from "../services/RestApiClient";
-import { Tokens, User } from "../types";
+import { useDispatch, useSelector } from "../store";
+import { Role, Tokens, User } from "../types";
 
 type AuthState = {
   currentUser: User | null;
@@ -17,33 +20,51 @@ export const auth = {
     setTokens: (tokens: Tokens | null) => ((state?: AuthState) => ({ ...state, tokens }))(),
   },
   effects: {
-    async signIn(
-      { email, password }: { email: string, password: string },
-      dispatch?: any,
-    ) {
+    async signIn({ email, password }: LoginForm) {
+      const dispatch = useDispatch();
       const tokens = await RestApiClient.signIn({ email, password });
 
       if (tokens) {
         localStorage.setItem('jwt_token', JSON.stringify(tokens));
-        (dispatch as typeof storeReducers).auth.setTokens(tokens);
+        dispatch.auth.setTokens(tokens);
       }
     },
 
-    async signUp(
-      { email, password, confirmPassword }: { email: string, password: string, confirmPassword: string },
-      dispatch?: any,
-    ) {
+    async signUp({ email, password, confirmPassword }: RegisterForm) {
+      const dispatch = useDispatch();
       const tokens = await RestApiClient.signUp({ email, password, confirmPassword });
 
       if (tokens) {
         localStorage.setItem('jwt_token', JSON.stringify(tokens));
-        (dispatch as typeof storeReducers).auth.setTokens(tokens);
+        dispatch.auth.setTokens(tokens);
       }
     },
 
-    signOut(_payload: any, dispatch?: any) {
+    signOut() {
       localStorage.removeItem('jwt_token');
       window.location.reload();
-    }
+    },
+
+    async getCurrentUser() {
+      const dispatch = useDispatch();
+      const currentUser = await RestApiClient.getCurrentUser();
+
+      if (currentUser) {
+        dispatch.auth.setCurrentUser(currentUser);
+      }
+    },
+
+    async updateCurrentUser(payload: UserAccountForm) {
+      const dispatch = useDispatch();
+      const { auth: { currentUser } } = useSelector();
+
+      if (!currentUser) return
+
+      const updatedUser = await RestApiClient.updateUser(currentUser.id, { ...payload, role: currentUser.role });
+
+      if (updatedUser) {
+        dispatch.auth.setCurrentUser(updatedUser);
+      }
+    },
   }
 }

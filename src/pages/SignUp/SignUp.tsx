@@ -1,4 +1,4 @@
-import { createForm, email, Field, Form, minLength, required, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, Field, Form, getValue, minLength, required, SubmitEvent, value } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField, Typography } from "@suid/material";
 import { Component, createResource, createSignal, For, Setter } from "solid-js";
 import { useDispatch } from "../../store";
@@ -6,12 +6,8 @@ import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignUp, StyledSignUpForm } from "./SignUp.styles";
 
-async function signUp(payload: RegisterForm | null) {
+async function signUp(payload: RegisterForm) {
   const dispatch = useDispatch();
-
-  if (!payload) {
-    return;
-  }
 
   return dispatch.auth.signUp({ email: payload.email, password: payload.password, confirmPassword: payload.confirmPassword });
 }
@@ -33,7 +29,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
   const registerForm = createForm<RegisterForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<RegisterForm | null>(null);
 
-  const [registration] = createResource(formData, (e) => signUp(e));
+  const [registration] = createResource(formData, signUp);
 
   const handleSubmit = (values: RegisterForm, event: SubmitEvent) => {
     event.preventDefault();
@@ -62,10 +58,11 @@ const SignUp: Component<ISignUpProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="email"
+                label="E-mail"
                 color="secondary"
                 variant="outlined"
-                label="E-mail"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
@@ -83,10 +80,11 @@ const SignUp: Component<ISignUpProps> = (props) => {
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
+                label="Password"
                 color="secondary"
                 variant="outlined"
-                label="Password"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
@@ -96,17 +94,18 @@ const SignUp: Component<ISignUpProps> = (props) => {
             name="confirmPassword"
             validate={[
               required('Please enter your password.'),
-              minLength(8, 'Your password must have 8 characters or more.')
+              value(getValue(registerForm, 'password') || '', 'Passwords must match.')
             ]}
           >
             {(field) =>
               <TextField
                 inputProps={{ ...remapFieldProps(field.props) }}
                 type="password"
+                label="Confirm password"
                 color="secondary"
                 variant="outlined"
-                label="Confirm password"
                 required
+                value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
@@ -120,7 +119,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
               : <span class="error-message">{registration.error?.message}</span>
             : null}
 
-          <div class="signup-form--buttons">
+          <div class="signup-form-buttons">
             <Button color="secondary" onClick={() => props.setShowLogin(true)}>Already have an account?</Button>
 
             <Button

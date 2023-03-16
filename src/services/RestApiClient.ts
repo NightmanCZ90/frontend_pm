@@ -1,4 +1,4 @@
-import { Tokens } from '../types';
+import { Role, Tokens, User } from '../types';
 import ApiClient from './ApiClient';
 import { BASE_URL } from './axios';
 
@@ -47,24 +47,24 @@ class RestApiClient extends ApiClient {
   //   })
   // }
 
-  // async getCurrentUser() {
-  //   return this.axiosRequest<User>({
-  //     url: '/users/current',
-  //     method: 'GET'
-  //   })
-  // }
+  async getCurrentUser() {
+    return this.axiosRequest<User>({
+      url: '/users/current',
+      method: 'GET'
+    })
+  }
 
-  // async updateUser(userId: number, body: {
-  //   firstName: string,
-  //   lastName: string,
-  //   role: Role,
-  // }) {
-  //   return this.axiosRequest<User>({
-  //     url: `/users/${userId}`,
-  //     method: 'PUT',
-  //     body,
-  //   })
-  // }
+  async updateUser(userId: number, body: {
+    firstName: string,
+    lastName: string,
+    role: Role,
+  }) {
+    return this.axiosRequest<User>({
+      url: `/users/${userId}`,
+      method: 'PUT',
+      body,
+    })
+  }
 
   // /**
   //  * Portfolios
