@@ -3,7 +3,7 @@ import { RegisterForm } from "../pages/SignUp/SignUp";
 import { UserAccountForm } from "../pages/UserAccount/UserAccount";
 import RestApiClient from "../services/RestApiClient";
 import { useDispatch, useSelector } from "../store";
-import { Role, Tokens, User } from "../types";
+import { Tokens, User } from "../types";
 
 type AuthState = {
   currentUser: User | null;
