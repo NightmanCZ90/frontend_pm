@@ -58,7 +58,7 @@ interface IStoreProvider {
 
 }
 export const StoreProvider: ParentComponent<IStoreProvider> = (props) => {
-  const [state, setState] = createStore(storeState)
+  const [state, setState] = createStore(storeState);
 
   const mappedReducers = mapReducers(storeReducers, setState);
   const mappedEffects = mapEffects(storeEffects, mappedReducers);

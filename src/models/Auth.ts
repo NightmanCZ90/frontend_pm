@@ -1,8 +1,9 @@
 import { LoginForm } from "../pages/SignIn/SignIn";
 import { RegisterForm } from "../pages/SignUp/SignUp";
+import { UserAccountForm } from "../pages/UserAccount/UserAccount";
 import RestApiClient from "../services/RestApiClient";
-import { useDispatch } from "../store";
-import { Tokens, User } from "../types";
+import { useDispatch, useSelector } from "../store";
+import { Role, Tokens, User } from "../types";
 
 type AuthState = {
   currentUser: User | null;
@@ -50,6 +51,19 @@ export const auth = {
 
       if (currentUser) {
         dispatch.auth.setCurrentUser(currentUser);
+      }
+    },
+
+    async updateCurrentUser(payload: UserAccountForm) {
+      const dispatch = useDispatch();
+      const { auth: { currentUser } } = useSelector();
+
+      if (!currentUser) return
+
+      const updatedUser = await RestApiClient.updateUser(currentUser.id, { ...payload, role: currentUser.role });
+
+      if (updatedUser) {
+        dispatch.auth.setCurrentUser(updatedUser);
       }
     },
   }
