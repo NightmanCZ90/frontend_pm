@@ -1,4 +1,4 @@
-import { createForm, email, Field, Form, minLength, required, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, Field, Form, getValue, minLength, required, SubmitEvent, value } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField, Typography } from "@suid/material";
 import { Component, createResource, createSignal, For, Setter } from "solid-js";
 import { useDispatch } from "../../store";
@@ -94,7 +94,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
             name="confirmPassword"
             validate={[
               required('Please enter your password.'),
-              minLength(8, 'Your password must have 8 characters or more.')
+              value(getValue(registerForm, 'password') || '', 'Passwords must match.')
             ]}
           >
             {(field) =>
