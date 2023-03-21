@@ -49,6 +49,11 @@ export const auth = {
       const dispatch = useDispatch();
       const currentUser = await RestApiClient.getCurrentUser();
 
+      // TODO: Implement currency
+      if (!currentUser.currency) {
+        currentUser.currency = 'USD';
+      }
+
       if (currentUser) {
         dispatch.auth.setCurrentUser(currentUser);
       }

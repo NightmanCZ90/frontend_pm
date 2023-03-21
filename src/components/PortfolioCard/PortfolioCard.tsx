@@ -7,7 +7,6 @@ import { generateGreenRedClass, generateUserName } from "../../utils/helpers";
 import { StyledPortfolioCard, StyledPortfolioCardContent, StyledPortfolioCardHeader } from './PortfolioCard.styles';
 
 interface IPortfolioCardProps {
-  currency: string;
   portfolio: Portfolio;
 }
 
