@@ -227,9 +227,13 @@ export const ThemeContext = createContext<ThemeContextValue>([
 
 
 export const CustomThemeProvider: ParentComponent = (props) => {
-  const [mode, setMode] = createSignal<"dark" | "light">("dark");
+  const storedMode = localStorage.getItem('themeMode') as ("dark" | "light" | null);
+  const [mode, setMode] = createSignal<"dark" | "light">(storedMode || "dark");
 
-  const toggleColorMode = () => setMode((prev) => (prev === "light" ? "dark" : "light"));
+  const toggleColorMode = () => {
+    localStorage.setItem('themeMode', mode() === "light" ? "dark" : "light");
+    setMode((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const settings = () => themeSettings(mode());
 
