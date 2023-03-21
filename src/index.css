@@ -54,4 +54,6 @@ code {
   --colorText: #fff;
 
   --colorError: #f44336;
+  --colorProfit: #26FF26;
+  --colorLoss: #FF2626;
 }
