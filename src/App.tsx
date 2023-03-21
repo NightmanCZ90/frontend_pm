@@ -13,6 +13,13 @@ import SignUp from './pages/SignUp';
 import useBootstrap from './hooks/useBootstrap';
 import UserAccount from './pages/UserAccount';
 
+// TODO: Add Internationalization and Localization
+export const formatter = new Intl.NumberFormat('en-US');
+export const formatterWithCurrency = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+})
+
 const App: Component = () => {
   useAxiosPrivate();
   useBootstrap();
