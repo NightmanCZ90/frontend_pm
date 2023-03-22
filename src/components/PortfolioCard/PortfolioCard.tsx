@@ -33,7 +33,7 @@ const PortfolioCard: Component<IPortfolioCardProps> = (props) => {
   const realizedGains = 0;
 
   return (
-    <StyledPortfolioCard colors={colors()} onMouseMove={onMouseMove} ref={cardRef}>
+    <StyledPortfolioCard colors={colors()} onMouseMove={onMouseMove} ref={cardRef} class="PortfolioCard">
 
       <A href={`/portfolios/${props.portfolio.id}`}>
         <Show when={props.portfolio.user}>
@@ -48,11 +48,11 @@ const PortfolioCard: Component<IPortfolioCardProps> = (props) => {
           </div>
 
         </Show>
-        <StyledPortfolioCardHeader colors={colors()}>
+        <StyledPortfolioCardHeader colors={colors()} class="PortfolioCardHeader">
           <h2>{props.portfolio.name}</h2>
           <h3>Portfolio</h3>
         </StyledPortfolioCardHeader>
-        <StyledPortfolioCardContent colors={colors()}>
+        <StyledPortfolioCardContent colors={colors()} class="PortfolioCardContent">
           <div class="portfolio-gains">
             <div>
               <span>Unrealized gains</span>
