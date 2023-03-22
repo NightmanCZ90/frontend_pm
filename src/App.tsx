@@ -12,6 +12,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import useBootstrap from './hooks/useBootstrap';
 import UserAccount from './pages/UserAccount';
+import PortfolioDetail from './pages/PortfolioDetail';
 
 // TODO: Add Internationalization and Localization
 export const formatter = new Intl.NumberFormat('en-US');
@@ -46,7 +47,12 @@ const App: Component = () => {
           <div class='content'>
             <Routes>
               <Route path={'/'} element={<Dashboard />} />
-              <Route path={'/portfolios'} element={<Portfolios />} />
+
+              <Route path={'/portfolios'}>
+                <Route path={'/'} element={<Portfolios />} />
+                <Route path={'/:id'} element={<PortfolioDetail />} />
+              </Route>
+
               <Route path={'/user-account'} element={<UserAccount />} />
             </Routes>
           </div>
