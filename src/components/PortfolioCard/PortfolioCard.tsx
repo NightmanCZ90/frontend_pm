@@ -48,11 +48,11 @@ const PortfolioCard: Component<IPortfolioCardProps> = (props) => {
           </div>
 
         </Show>
-        <StyledPortfolioCardHeader>
+        <StyledPortfolioCardHeader colors={colors()}>
           <h2>{props.portfolio.name}</h2>
           <h3>Portfolio</h3>
         </StyledPortfolioCardHeader>
-        <StyledPortfolioCardContent>
+        <StyledPortfolioCardContent colors={colors()}>
           <div class="portfolio-gains">
             <div>
               <span>Unrealized gains</span>

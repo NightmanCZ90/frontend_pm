@@ -20,6 +20,8 @@ export type Colors = {
   greenAccent: ColorShade;
   redAccent: ColorShade;
   blueAccent: ColorShade;
+  green: ColorShade;
+  red: ColorShade;
 }
 
 // Color design tokens export
@@ -81,6 +83,28 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         800: "#2a2d64",
         900: "#151632",
       },
+      green: {
+        100: "#d4ffd4",
+        200: "#a8ffa8",
+        300: "#7dff7d",
+        400: "#51ff51",
+        500: "#26ff26",
+        600: "#1ecc1e",
+        700: "#179917",
+        800: "#0f660f",
+        900: "#083308"
+      },
+      red: {
+        100: "#ffd4d4",
+        200: "#ffa8a8",
+        300: "#ff7d7d",
+        400: "#ff5151",
+        500: "#ff2626",
+        600: "#cc1e1e",
+        700: "#991717",
+        800: "#660f0f",
+        900: "#330808"
+      },
     }
     : {
       grey: {
@@ -96,15 +120,15 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
       },
 
       primary: {
-        900: "#ecedee",
-        800: "#d9dbdd",
-        700: "#c7c8cd",
-        600: "#b4b6bc",
-        500: "#a1a4ab",
-        400: "#818389",
-        300: "#616267",
+        100: "#202122",
         200: "#404244",
-        100: "#202122"
+        300: "#616267",
+        400: "#818389",
+        500: "#a1a4ab",
+        600: "#b4b6bc",
+        700: "#c7c8cd",
+        800: "#d9dbdd",
+        900: "#ecedee",
       },
       greenAccent: {
         100: "#0f2922",
@@ -138,6 +162,28 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         700: "#a4a9fc",
         800: "#c3c6fd",
         900: "#e1e2fe",
+      },
+      green: {
+        100: "#083308",
+        200: "#0f660f",
+        300: "#179917",
+        400: "#1ecc1e",
+        500: "#26ff26",
+        600: "#51ff51",
+        700: "#7dff7d",
+        800: "#a8ffa8",
+        900: "#d4ffd4",
+      },
+      red: {
+        100: "#330808",
+        200: "#660f0f",
+        300: "#991717",
+        400: "#cc1e1e",
+        500: "#ff2626",
+        600: "#ff5151",
+        700: "#ff7d7d",
+        800: "#ffa8a8",
+        900: "#ffd4d4",
       },
     }),
 });

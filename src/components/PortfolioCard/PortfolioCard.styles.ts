@@ -62,7 +62,6 @@ export const StyledPortfolioCard = styled('div') <IStyledPortfolioCardProps>`
 
     .investor {
       background: linear-gradient(to right, transparent, ${props => props.colors?.greenAccent[700]} 30%);
-      /* color: var(--card-investor); */
     }
 
     .cursor-bubble {
@@ -72,7 +71,11 @@ export const StyledPortfolioCard = styled('div') <IStyledPortfolioCardProps>`
   }
 `;
 
-export const StyledPortfolioCardHeader = styled('div')`
+interface IStyledPortfolioCardHeaderProps {
+  colors: Colors;
+}
+
+export const StyledPortfolioCardHeader = styled('div') <IStyledPortfolioCardHeaderProps>`
   margin-bottom: 1rem;
   z-index: 1;
 
@@ -82,11 +85,15 @@ export const StyledPortfolioCardHeader = styled('div')`
 
   h3 {
     font-weight: 300;
-    color: var(--colorHeaderSubInfo);
+    color: ${props => props.colors?.red[200]};
   }
 `;
 
-export const StyledPortfolioCardContent = styled('div')`
+interface IStyledPortfolioCardContentProps {
+  colors: Colors;
+}
+
+export const StyledPortfolioCardContent = styled('div') <IStyledPortfolioCardContentProps>`
   z-index: 1;
 
   .portfolio-gains {
@@ -98,7 +105,7 @@ export const StyledPortfolioCardContent = styled('div')`
       span:nth-of-type(2) {
 
         &.green {
-          color: var(--colorProfit);
+          color: ${props => props.colors?.green[300]};
         }
 
         &.red {
