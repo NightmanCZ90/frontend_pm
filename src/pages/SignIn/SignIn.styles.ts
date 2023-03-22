@@ -19,7 +19,7 @@ interface IStyledSignInFormProps {
 
 export const StyledSignInForm = styled(Box) <IStyledSignInFormProps>`
   padding: 3rem 5rem;
-  background-color: ${props => props.colors?.primary[400]};
+  background-color: ${props => props.colors?.primary[700]};
 
   form {
     width: 20rem;
@@ -28,7 +28,7 @@ export const StyledSignInForm = styled(Box) <IStyledSignInFormProps>`
     gap: 1rem;
 
     div.MuiInputBase-root {
-      background-color: ${props => props.colors?.primary[500]};
+      background-color: ${props => props.colors?.primary[900]};
     }
 
     .signin-form-button {

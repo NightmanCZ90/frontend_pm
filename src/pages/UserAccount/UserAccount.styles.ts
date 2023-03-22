@@ -26,7 +26,7 @@ export const StyledUserAccountContent = styled('div') <IStyledUserAccountContent
     gap: 1rem;
 
     div.MuiInputBase-root {
-      background-color: ${props => props.colors?.primary[400]};
+      background-color: ${props => props.colors?.primary[700]};
     }
 
     .signup-form-buttons {

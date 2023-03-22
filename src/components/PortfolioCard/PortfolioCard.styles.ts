@@ -6,7 +6,7 @@ interface IStyledPortfolioCardProps {
 }
 
 export const StyledPortfolioCard = styled('div') <IStyledPortfolioCardProps>`
-  background-color: ${props => props.colors?.primary[400]};
+  background-color: ${props => props.colors?.primary[700]};
   overflow: hidden;
   position: relative;
   min-width: 20rem;
@@ -28,7 +28,7 @@ export const StyledPortfolioCard = styled('div') <IStyledPortfolioCardProps>`
       display: flex;
       align-items: center;
       padding: 0.1rem 0.5rem 0.1rem 5rem;
-      background: linear-gradient(to right, transparent, ${props => props.colors?.blueAccent[800]} 30%);
+      background: linear-gradient(to right, transparent, ${props => props.colors?.blueAccent[700]} 30%);
       font-weight: 300;
       font-size: 14px;
 
@@ -57,12 +57,12 @@ export const StyledPortfolioCard = styled('div') <IStyledPortfolioCardProps>`
   }
 
   &:hover {
-    background-color: ${props => props.colors?.blueAccent[700]};
+    background-color: ${props => props.colors?.blueAccent[800]};
     cursor: pointer;
 
     .investor {
       background: linear-gradient(to right, transparent, ${props => props.colors?.greenAccent[700]} 30%);
-      color: var(--card-investor);
+      /* color: var(--card-investor); */
     }
 
     .cursor-bubble {
@@ -82,7 +82,7 @@ export const StyledPortfolioCardHeader = styled('div')`
 
   h3 {
     font-weight: 300;
-    color: var(--color-header-subinfo);
+    color: var(--colorHeaderSubInfo);
   }
 `;
 

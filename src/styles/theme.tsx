@@ -38,15 +38,15 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         900: "#141414",
       },
       primary: {
-        100: "#d0d1d5",
-        200: "#a1a4ab",
-        300: "#727681",
-        400: "#1F2A40",
-        500: "#141b2d",
-        600: "#101624",
-        700: "#0c101b",
-        800: "#080b12",
-        900: "#040509",
+        100: "#d2d4d9",
+        200: "#a5aab3",
+        300: "#797f8c",
+        400: "#4c5566",
+        500: "#1f2a40",
+        600: "#192233",
+        700: "#131926",
+        800: "#0c111a",
+        900: "#06080d"
       },
       greenAccent: {
         100: "#dbf5ee",
@@ -94,16 +94,17 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         800: "#c2c2c2",
         900: "#e0e0e0",
       },
+
       primary: {
-        100: "#040509",
-        200: "#080b12",
-        300: "#0c101b",
-        400: "#f2f0f0", // manually changed from #101624
-        500: "#141b2d",
-        600: "#1F2A40",
-        700: "#727681",
-        800: "#a1a4ab",
-        900: "#d0d1d5",
+        900: "#ecedee",
+        800: "#d9dbdd",
+        700: "#c7c8cd",
+        600: "#b4b6bc",
+        500: "#a1a4ab",
+        400: "#818389",
+        300: "#616267",
+        200: "#404244",
+        100: "#202122"
       },
       greenAccent: {
         100: "#0f2922",
@@ -154,7 +155,7 @@ export const themeSettings = (mode: "dark" | "light") => {
             main: colors.primary[500],
           },
           secondary: {
-            main: colors.greenAccent[500],
+            main: colors.greenAccent[300],
           },
           neutral: {
             dark: colors.grey[700],
@@ -162,16 +163,16 @@ export const themeSettings = (mode: "dark" | "light") => {
             light: colors.grey[100],
           },
           background: {
-            default: colors.primary[500],
+            default: colors.primary[900],
           },
         }
         : {
           // Palette values for light mode
           primary: {
-            main: colors.primary[100],
+            main: colors.primary[500],
           },
           secondary: {
-            main: colors.greenAccent[500],
+            main: colors.greenAccent[300],
           },
           neutral: {
             dark: colors.grey[700],
