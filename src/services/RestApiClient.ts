@@ -1,4 +1,4 @@
-import { PortfolioTypes, Role, Tokens, User } from '../types';
+import { Portfolio, PortfolioTypes, Role, Tokens, User } from '../types';
 import ApiClient from './ApiClient';
 import { BASE_URL } from './axios';
 
@@ -87,12 +87,12 @@ class RestApiClient extends ApiClient {
     })
   }
 
-  // async getPortfolio(portfolioId: number) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}`,
-  //     method: 'GET',
-  //   })
-  // }
+  async getPortfolio(portfolioId: string | number) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}`,
+      method: 'GET',
+    })
+  }
 
   // async createPortfolio(body: {
   //   name: string,
