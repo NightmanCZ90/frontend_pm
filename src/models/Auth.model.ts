@@ -63,7 +63,7 @@ export const auth = {
       const dispatch = useDispatch();
       const { auth: { currentUser } } = useSelector();
 
-      if (!currentUser) return
+      if (!currentUser) return;
 
       const updatedUser = await RestApiClient.updateUser(currentUser.id, { ...payload, role: currentUser.role });
 
