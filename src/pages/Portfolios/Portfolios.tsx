@@ -1,4 +1,7 @@
+import { A } from "@solidjs/router";
+import { Button } from "@suid/material";
 import { Component, createResource, For, Show } from "solid-js";
+
 import Header from "../../components/Header";
 import PortfolioCard from "../../components/PortfolioCard";
 import { useDispatch, useSelector } from "../../store";
@@ -17,8 +20,19 @@ const Portfolios: Component = () => {
   return (
     <StyledPortfolios class="Portfolios">
       <div class="header-content">
-        <Header title="Portfolios" subtitle="Create and update your portfolios here" />
+        <div class="left">
+          <Header title="Portfolios" subtitle="Create and update your portfolios here" />
+        </div>
+
+        <div class="right">
+          <A class="create-button" href={'/portfolios/create'}>
+            <Button color="secondary" variant="contained">
+              Create Portfolio
+            </Button>
+          </A>
+        </div>
       </div>
+
       <StyledPortfoliosContent>
         <Show when={!data.error} fallback={data.error.message}>
 

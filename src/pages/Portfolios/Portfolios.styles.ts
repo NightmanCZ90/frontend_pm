@@ -3,6 +3,24 @@ import { styled } from "solid-styled-components";
 export const StyledPortfolios = styled('div')`
   padding: 20px;
   overflow-y: auto;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+
+    .left {
+      display: flex;
+      gap: 8px;
+    }
+
+    .right {
+
+      a.create-button {
+        text-decoration: none;
+        float: right;
+      }
+    }
+  }
 `;
 
 interface IStyledPortfoliosContentProps {
