@@ -4,12 +4,6 @@ import { Colors } from "../../styles/theme";
 export const StyledUserAccount = styled('div')`
   padding: 20px;
   overflow-y: auto;
-
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
 `;
 
 interface IStyledUserAccountContentProps {
@@ -26,7 +20,7 @@ export const StyledUserAccountContent = styled('div') <IStyledUserAccountContent
     gap: 1rem;
 
     div.MuiInputBase-root {
-      background-color: ${props => props.colors?.primary[700]};
+      background-color: ${props => props.colors?.primary[900]};
     }
 
     .signup-form-buttons {
