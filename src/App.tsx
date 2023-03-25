@@ -13,6 +13,7 @@ import SignUp from './pages/SignUp';
 import useBootstrap from './hooks/useBootstrap';
 import UserAccount from './pages/UserAccount';
 import PortfolioDetail from './pages/PortfolioDetail';
+import CreatePortfolio from './pages/CreatePortfolio';
 
 // TODO: Add Internationalization and Localization
 export const formatter = new Intl.NumberFormat('en-US');
@@ -50,6 +51,7 @@ const App: Component = () => {
 
               <Route path={'/portfolios'}>
                 <Route path={'/'} element={<Portfolios />} />
+                <Route path={'/create'} element={<CreatePortfolio />} />
                 <Route path={'/:id'} element={<PortfolioDetail />} />
               </Route>
 
