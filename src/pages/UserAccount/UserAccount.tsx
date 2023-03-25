@@ -1,4 +1,4 @@
-import { createForm, Field, Form, required, setValue } from "@modular-forms/solid";
+import { createForm, Field, Form, required, setValue, SubmitEvent } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField } from "@suid/material";
 import { Component, createEffect, createResource, createSignal, For } from "solid-js";
 import Header from "../../components/Header";
