@@ -94,19 +94,19 @@ class RestApiClient extends ApiClient {
     })
   }
 
-  // async createPortfolio(body: {
-  //   name: string,
-  //   description: string,
-  //   color: string,
-  //   url: string,
-  //   investorId: number | null,
-  // }) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: '/portfolios/create',
-  //     method: 'POST',
-  //     body,
-  //   })
-  // }
+  async createPortfolio(body: {
+    name: string,
+    description: string,
+    color: string,
+    url: string,
+    investorId: number | null,
+  }) {
+    return this.axiosRequest<Portfolio>({
+      url: '/portfolios/create',
+      method: 'POST',
+      body,
+    })
+  }
 
   // async updatePortfolio(portfolioId: number, body: {
   //   name: string,
