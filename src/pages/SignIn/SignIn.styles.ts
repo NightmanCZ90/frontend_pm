@@ -41,9 +41,5 @@ export const StyledSignInForm = styled(Box) <IStyledSignInFormProps>`
       justify-content: space-between;
       margin-top: 2rem;
     }
-
-    .error-message {
-      color: var(--colorError);
-    }
   }
 `;

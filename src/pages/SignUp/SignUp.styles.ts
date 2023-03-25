@@ -36,9 +36,5 @@ export const StyledSignUpForm = styled(Box) <IStyledSignUpFormProps>`
       justify-content: space-between;
       margin-top: 2rem;
     }
-
-    .error-message {
-      color: var(--colorError);
-    }
   }
 `;
