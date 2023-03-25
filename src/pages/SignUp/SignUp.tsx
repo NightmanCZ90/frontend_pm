@@ -1,6 +1,7 @@
 import { createForm, email, Field, Form, getValue, minLength, required, SubmitEvent, value } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField, Typography } from "@suid/material";
-import { Component, createResource, createSignal, For, Setter } from "solid-js";
+import { Component, createResource, createSignal, Setter } from "solid-js";
+import ErrorMessage from "../../components/ErrorMessage";
 import { useDispatch } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
@@ -111,13 +112,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
               />}
           </Field>
 
-          {registration.error && registration.error.message
-            ? Array.isArray(registration.error.message)
-              ? <For each={registration.error.message}>
-                {(item) => <span class="error-message">{item}</span>}
-              </For>
-              : <span class="error-message">{registration.error?.message}</span>
-            : null}
+          <ErrorMessage resource={registration} />
 
           <div class="signup-form-buttons">
             <Button color="secondary" onClick={() => props.setShowLogin(true)}>Already have an account?</Button>

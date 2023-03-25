@@ -1,6 +1,7 @@
 import { createForm, Field, Form, required, setValue, SubmitEvent } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField } from "@suid/material";
-import { Component, createEffect, createResource, createSignal, For } from "solid-js";
+import { Component, createEffect, createResource, createSignal } from "solid-js";
+import ErrorMessage from "../../components/ErrorMessage";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
@@ -101,13 +102,9 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
               {updatedCurrentUser.loading ? (<CircularProgress size={24} />) : "Save"}
             </Button>
           </div>
-          {updatedCurrentUser.error && updatedCurrentUser.error.message
-            ? Array.isArray(updatedCurrentUser.error.message)
-              ? <For each={updatedCurrentUser.error.message}>
-                {(item) => <span class="error-message">{item}</span>}
-              </For>
-              : <span class="error-message">{updatedCurrentUser.error?.message}</span>
-            : null}
+
+          <ErrorMessage resource={updatedCurrentUser} />
+
         </Form>
       </StyledUserAccountContent>
     </StyledUserAccount>
