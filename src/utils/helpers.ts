@@ -1,6 +1,6 @@
 import { FieldElement } from "@modular-forms/solid";
 import { JSX } from "solid-js";
-import { User } from "../types";
+import { Portfolio, PortfolioOwnership, User } from "../types";
 
 export const remapFieldProps = (fieldProps: {
   name: string;
@@ -27,14 +27,14 @@ export const generateUserName = (user?: User) => {
   return email || '';
 }
 
-// export const generatePortfolioOwnership = (data: {userId?: number | null, portfolio?: Portfolio | null}): PortfolioOwnership => {
-//   const { portfolio, userId } = data;
-//   if (!userId || !portfolio) return PortfolioOwnership.Personal;
+export const generatePortfolioOwnership = (data: { userId?: number | null, portfolio?: Portfolio | null }): PortfolioOwnership => {
+  const { portfolio, userId } = data;
+  if (!userId || !portfolio) return PortfolioOwnership.Personal;
 
-//   if (portfolio.pmId && portfolio.pmId === userId) return PortfolioOwnership.Managing;
-//   if (portfolio.pmId && portfolio.pmId !== userId) return PortfolioOwnership.Managed;
-//   return PortfolioOwnership.Personal;
-// }
+  if (portfolio.pmId && portfolio.pmId === userId) return PortfolioOwnership.Managing;
+  if (portfolio.pmId && portfolio.pmId !== userId) return PortfolioOwnership.Managed;
+  return PortfolioOwnership.Personal;
+}
 
 export const debounce = (fn: Function, ms = 300) => {
   let timeoutId: ReturnType<typeof setTimeout>;

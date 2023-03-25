@@ -8,7 +8,20 @@ export const StyledPortfolioDetail = styled('div')`
 
   .header-content {
     display: flex;
-    gap: 8px;
+    justify-content: space-between;
+
+    .left {
+      display: flex;
+      gap: 8px;
+    }
+
+    .right {
+
+      a.edit-button {
+        text-decoration: none;
+        float: right;
+      }
+    }
   }
 `;
 
@@ -34,6 +47,24 @@ export const StyledPortfolioDetailContent = styled('div') <IStyledPortfolioDetai
         border-radius: 50%;
       }
     }
+  }
 
+  section.ownership-edit-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .owner {
+      padding: 20px;
+      background-color: ${props => props.colors?.primary[700]};
+
+      h3 {
+
+        span {
+          margin-left: 0.5rem;
+          color: ${props => props.colors?.red[300]};
+        }
+      }
+    }
   }
 `;
