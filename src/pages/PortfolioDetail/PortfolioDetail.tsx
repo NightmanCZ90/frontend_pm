@@ -14,7 +14,6 @@ const getPortfolio = async (id: string) => {
   return RestApiClient.getPortfolio(id);
 }
 
-
 interface IPortfolioDetailProps {
 
 }
@@ -63,6 +62,8 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
 
           <StyledPortfolioDetailContent colors={colors()} class="PortfolioDetailContent">
 
+            {/* TODO: Reorganize */}
+
             <section class="portfolio">
               <div class="portfolio-layout">
                 {/* TODO: Remove to implement portfolio graph */}
@@ -70,9 +71,23 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
               </div>
             </section>
 
+            {/* TODO: Add transaction creation form */}
+
+            {/* TODO: Add transactions list */}
+
             <section class="ownership">
               <div class="owner">
                 <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span></h3>
+              </div>
+            </section>
+
+            <section class="portfolio-info">
+              <h3>Portfolio information</h3>
+              <div>
+                {portfolio()?.description || 'No description set'}
+              </div>
+              <div>
+                {portfolio()?.url || 'No url set'}
               </div>
             </section>
 

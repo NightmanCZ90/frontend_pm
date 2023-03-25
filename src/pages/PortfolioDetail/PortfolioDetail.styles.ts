@@ -32,11 +32,14 @@ interface IStyledPortfolioDetailContentProps {
 export const StyledPortfolioDetailContent = styled('div') <IStyledPortfolioDetailContentProps>`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 16px;
 
-  section.portfolio {
+  section {
     padding: 20px;
     background-color: ${props => props.colors?.primary[700]};
+  }
+
+  section.portfolio {
 
     .portfolio-layout {
 
@@ -49,14 +52,13 @@ export const StyledPortfolioDetailContent = styled('div') <IStyledPortfolioDetai
     }
   }
 
-  section.ownership-edit-button {
+  section.ownership {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 22rem;
 
     .owner {
-      padding: 20px;
-      background-color: ${props => props.colors?.primary[700]};
 
       h3 {
 
@@ -66,5 +68,11 @@ export const StyledPortfolioDetailContent = styled('div') <IStyledPortfolioDetai
         }
       }
     }
+  }
+  
+  section.portfolio-info {
+    width: 22rem;
+    display: flex;
+    flex-direction: column;
   }
 `;
