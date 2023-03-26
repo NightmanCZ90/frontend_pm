@@ -1,4 +1,4 @@
-import { createForm, Field, Form, maxLength, required, setValue, SubmitEvent } from "@modular-forms/solid";
+import { createForm, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
 import { A, useParams } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
@@ -21,9 +21,9 @@ const linkPortfolio = async (id: string, payload: InvestorEmailForm) => {
   return RestApiClient.linkPortfolio(id, payload);
 }
 
-// const unlinkPortfolio = async (id: string) => {
-//   return RestApiClient.unlinkPortfolio(id);
-// }
+const unlinkPortfolio = async (id: string) => {
+  return RestApiClient.unlinkPortfolio(id);
+}
 
 const updatePortfolio = async (id: string, portfolio: EditPortfolioForm) => {
   return RestApiClient.updatePortfolio(id, portfolio);
@@ -60,15 +60,15 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   // TODO: Proxy is only auth, currentUser is NOT!!
   const { auth } = useSelector();
 
-  const [portfolio, { refetch }] = createResource(params.id, getPortfolio);
+  const [portfolio, { mutate }] = createResource(params.id, getPortfolio);
 
   const investorEmailForm = createForm<InvestorEmailForm>({ validateOn: "touched" });
 
   const [linkInvestorEmail, setLinkInvestorEmail] = createSignal<InvestorEmailForm | null>(null);
-  const [linkedPortfolio] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.id, payload));
+  const [linkedPortfolio, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.id, payload));
 
-  // const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
-  // const [unlinkedPortfolio] = createResource(investorEmail, () => unlinkPortfolio());
+  const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
+  const [unlinkedPortfolio, { mutate: mutateUnlink }] = createResource(unlinkPortfolioId, unlinkPortfolio);
 
   const editPortfolioForm = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
 
@@ -76,17 +76,33 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.id, formData));
 
   createEffect(() => {
-    if (!linkedPortfolio.error && linkedPortfolio()) {
-      refetch();
-    }
-  });
-
-  createEffect(() => {
     if ((!portfolio.error && portfolio())) {
       setValue(editPortfolioForm, 'name', portfolio()?.name || '');
       setValue(editPortfolioForm, 'description', portfolio()?.description || '');
       setValue(editPortfolioForm, 'url', portfolio()?.url || '');
       setValue(editPortfolioForm, 'color', portfolio()?.color || '');
+    }
+  });
+
+  createEffect(() => {
+    if (!linkedPortfolio.error && linkedPortfolio()) {
+      reset(investorEmailForm);
+      mutateUnlink(undefined);
+      mutate(linkedPortfolio());
+    }
+  });
+
+  createEffect(() => {
+    if (!unlinkedPortfolio.error && unlinkedPortfolio()) {
+      setUnlinkPortfolioId(null);
+      mutateLink(undefined);
+      mutate(unlinkedPortfolio());
+    }
+  });
+
+  createEffect(() => {
+    if (!updatedPortfolio.error && updatedPortfolio()) {
+      mutate(updatedPortfolio());
     }
   });
 
@@ -168,14 +184,31 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     {(portfolio.loading || linkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Link investor'}
                   </Button>
 
-                  <ErrorMessage resource={linkedPortfolio} />
-
-                  <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
 
                 </Form>
               </Match>
 
+              <Match when={ownership() === PortfolioOwnership.Managing}>
+                <h4>Unlink investor from portfolio</h4>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => setUnlinkPortfolioId(params.id)}
+                  disabled={portfolio.loading || unlinkedPortfolio.loading}
+                >
+                  {(portfolio.loading || unlinkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Unlink investor'}
+                </Button>
+
+              </Match>
+
             </Switch>
+
+            <ErrorMessage resource={linkedPortfolio} />
+
+            <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
+            <ErrorMessage resource={unlinkedPortfolio} />
+
+            <SuccessMessage resource={unlinkedPortfolio} successMessage="Portfolio has been successfully unlinked." />
           </div>
 
           <div class="portfolio-edit-form">
