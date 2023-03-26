@@ -1,5 +1,5 @@
 import { createForm, email, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
-import { A, useParams } from "@solidjs/router";
+import { A, useNavigate, useParams } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
 import { Component, createEffect, createResource, createSignal, Match, Show, Switch } from "solid-js";
@@ -54,6 +54,7 @@ interface IEditPortfolioProps {
 
 const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const params = useParams();
+  const navigate = useNavigate();
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
@@ -96,7 +97,12 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
     if (!unlinkedPortfolio.error && unlinkedPortfolio()) {
       setUnlinkPortfolioId(null);
       mutateLink(undefined);
-      mutate(unlinkedPortfolio());
+
+      if (unlinkedPortfolio()?.userId !== auth.currentUser?.id) {
+        navigate('/portfolios');
+      } else {
+        mutate(unlinkedPortfolio());
+      }
     }
   });
 
@@ -187,8 +193,6 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   >
                     {(portfolio.loading || linkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Link investor'}
                   </Button>
-
-
                 </Form>
               </Match>
 
@@ -202,16 +206,28 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                 >
                   {(portfolio.loading || unlinkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Unlink investor'}
                 </Button>
-
               </Match>
+
+              <Match when={ownership() === PortfolioOwnership.Managed}>
+                <h4>Unlink from portfolio</h4>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => setUnlinkPortfolioId(params.id)}
+                  disabled={portfolio.loading || unlinkedPortfolio.loading}
+                >
+                  {(portfolio.loading || unlinkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Unlink from portfolio'}
+                </Button>
+              </Match>
+
+              {/* TODO: Implement unconfirmed once implemented */}
 
             </Switch>
 
             <ErrorMessage resource={linkedPortfolio} />
-
-            <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
             <ErrorMessage resource={unlinkedPortfolio} />
 
+            <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
             <SuccessMessage resource={unlinkedPortfolio} successMessage="Portfolio has been successfully unlinked." />
           </div>
 
