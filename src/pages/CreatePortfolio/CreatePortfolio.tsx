@@ -47,7 +47,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const [isManaging, setIsManaging] = createSignal<boolean>(true);
+  const [isManaging, setIsManaging] = createSignal<boolean>(false);
   const [emailChanged, setEmailChanged] = createSignal(false);
 
   // Investor email check
