@@ -1,4 +1,4 @@
-import { createForm, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
 import { A, useParams } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
@@ -157,6 +157,10 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   <Field
                     of={investorEmailForm}
                     name="email"
+                    validate={[
+                      required("Please enter investor's email."),
+                      email('Please enter a valid email address.'),
+                    ]}
                   >
                     {(field) =>
                       <TextField
