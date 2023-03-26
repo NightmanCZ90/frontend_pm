@@ -9,9 +9,11 @@ interface ISuccessMessageProps {
 const SuccessMessage: Component<ISuccessMessageProps> = (props) => {
   return (
     <Show when={!props.resource.error && props.resource()}>
-      <span class="success-message">
-        {props.successMessage}
-      </span>
+      <StyledSuccessMessage class="SuccessMessage">
+        <span class="success-message">
+          {props.successMessage}
+        </span>
+      </StyledSuccessMessage>
     </Show>
   )
 }

@@ -8,7 +8,7 @@ interface IErrorMessageProps {
 const ErrorMessage: Component<IErrorMessageProps> = (props) => {
   return (
     <Show when={props.resource.error && props.resource.error.message}>
-      <StyledErrorMessage>
+      <StyledErrorMessage class="ErrorMessage">
         <Show when={Array.isArray(props.resource.error.message)} fallback={<span class="error-message">{props.resource.error?.message}</span>}>
           <For each={props.resource.error.message}>
             {(item) => <span class="error-message">{item}</span>}
