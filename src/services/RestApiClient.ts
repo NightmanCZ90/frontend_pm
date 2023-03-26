@@ -108,7 +108,7 @@ class RestApiClient extends ApiClient {
     })
   }
 
-  async updatePortfolio(portfolioId: string, body: {
+  async updatePortfolio(portfolioId: string | number, body: {
     name: string,
     description: string,
     color: string,
@@ -121,22 +121,22 @@ class RestApiClient extends ApiClient {
     })
   }
 
-  // async linkPortfolio(portfolioId: number, body: {
-  //   email: string,
-  // }) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}/link`,
-  //     method: 'PUT',
-  //     body,
-  //   })
-  // }
+  async linkPortfolio(portfolioId: string | number, body: {
+    email: string,
+  }) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}/link`,
+      method: 'PATCH',
+      body,
+    })
+  }
 
-  // async unlinkPortfolio(portfolioId: number) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}/unlink`,
-  //     method: 'PUT',
-  //   })
-  // }
+  async unlinkPortfolio(portfolioId: string | number) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}/unlink`,
+      method: 'PATCH',
+    })
+  }
 
   // async confirmPortfolio(portfolioId: number) {
   //   return this.axiosRequest<Portfolio>({
