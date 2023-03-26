@@ -1,23 +1,30 @@
-import { createForm, Field, Form, maxLength, required, reset, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
 import { A } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
-import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
-import { Component, createEffect, createResource, createSignal, For, Show } from "solid-js";
+import { Button, CircularProgress, FormControlLabel, IconButton, Switch, TextField } from "@suid/material";
+import { Component, createEffect, createResource, createSignal, Show } from "solid-js";
+import ErrorMessage from "../../components/ErrorMessage";
 import Header from "../../components/Header";
+import SuccessMessage from "../../components/SuccessMessage";
 import RestApiClient from "../../services/RestApiClient";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledCreatePortfolio } from "./CreatePortfolio.styles";
 
+async function checkInvestor(payload: InvestorCheckForm) {
+  return RestApiClient.checkInvestor(payload.investorEmail);
+}
+
 async function createPortfolio(payload: CreatePortfolioForm) {
+  return RestApiClient.createPortfolio(payload);
+}
 
-  // TODO: Remove after ownership implementation
-  const body = { ...payload, investorId: null }
-
-  return RestApiClient.createPortfolio(body);
+export type InvestorCheckForm = {
+  investorEmail: string;
 }
 
 export type CreatePortfolioForm = {
+  investorId: number | null;
   name: string,
   description: string,
   color: string,
@@ -25,7 +32,8 @@ export type CreatePortfolioForm = {
 }
 
 const initialCreatePortfolioForm: CreatePortfolioForm = {
-  name: 'default',
+  investorId: null,
+  name: '',
   description: '',
   color: 'FFFFFF',
   url: '',
@@ -39,15 +47,42 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
+  const [isManaging, setIsManaging] = createSignal<boolean>(true);
+  const [emailChanged, setEmailChanged] = createSignal(false);
+
+  // Investor email check
+  const investorCheckForm = createForm<InvestorCheckForm>({ validateOn: "touched" });
+  const [investorEmail, setInvestorEmail] = createSignal<InvestorCheckForm | null>(null);
+  const [investorId] = createResource(investorEmail, checkInvestor);
+
+  // Portfolio creation
   const createPortfolioForm = createForm<CreatePortfolioForm>({ validateOn: "touched", initialValues: initialCreatePortfolioForm });
   const [formData, setFormData] = createSignal<CreatePortfolioForm | null>(null);
-
   const [portfolio] = createResource(formData, createPortfolio);
 
-  // Reset form on successful portfolio creation
+  // Set investor Id to portfolio creation form on success
   createEffect(() => {
-    portfolio() && reset(createPortfolioForm);
+    if (!investorId.error && investorId()) {
+      setValue(createPortfolioForm, "investorId", investorId()?.id || null);
+    }
   });
+
+  // Reset forms on successful portfolio creation
+  createEffect(() => {
+    if (!portfolio.error && portfolio()) {
+      reset(createPortfolioForm);
+      reset(investorCheckForm);
+      setEmailChanged(true);
+    }
+  });
+
+  const handleCheckInvestor = (values: InvestorCheckForm, event: SubmitEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setEmailChanged(false);
+    setInvestorEmail(values);
+  }
 
   const handleSubmit = (values: CreatePortfolioForm, event: SubmitEvent) => {
     event.preventDefault();
@@ -55,6 +90,8 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
 
     setFormData(values);
   }
+
+  const creationButtonDisabled = () => portfolio.loading || createPortfolioForm.invalid || (isManaging() && (emailChanged() || investorId.loading || investorCheckForm.invalid || investorId.error || !investorId()));
 
   return (
     <StyledCreatePortfolio class="CreatePortfolio" colors={colors()}>
@@ -68,113 +105,171 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
         <Header title={'Create portfolio'} subtitle="You can create portfolio here" />
       </div>
 
-      {/* TODO: Select ownership at creation */}
+      <div class="owner-selection">
+        <h3>Select portfolio option</h3>
+        <FormControlLabel
+          control={
+            <Switch
+              color="secondary"
+              onChange={(e, value) => setIsManaging(value)}
+              checked={isManaging()}
+            />
+          }
+          label={isManaging() ? 'Managing' : 'Personal'}
+        />
 
-      <Form of={createPortfolioForm} onSubmit={handleSubmit}>
-        <h3>Portfolio information</h3>
-        <Field
-          of={createPortfolioForm}
-          name="name"
-          validate={[
-            required('Please enter portfolio name.'),
-            maxLength(20, 'Max length is 20 characters.'),
-          ]}
-        >
-          {(field) =>
-            <TextField
-              inputProps={{ ...remapFieldProps(field.props) }}
-              fullWidth
-              label="Portfolio name"
-              color="secondary"
-              variant="outlined"
-              required
-              value={field.value}
-              error={Boolean(field.error)}
-              helperText={field.error}
-            />}
-        </Field>
-        <Field
-          of={createPortfolioForm}
-          name="description"
-          validate={[
-            maxLength(240, 'Max length is 240 characters.'),
-          ]}
-        >
-          {(field) =>
-            <TextField
-              inputProps={{ ...remapFieldProps(field.props) }}
-              fullWidth
-              label="Portfolio description"
-              color="secondary"
-              variant="outlined"
-              required
-              value={field.value}
-              error={Boolean(field.error)}
-              helperText={field.error}
-            />}
-        </Field>
-        <Field
-          of={createPortfolioForm}
-          name="url"
-        >
-          {(field) =>
-            <TextField
-              inputProps={{ ...remapFieldProps(field.props) }}
-              fullWidth
-              label="Portfolio url"
-              color="secondary"
-              variant="outlined"
-              required
-              value={field.value}
-              error={Boolean(field.error)}
-              helperText={field.error}
-            />}
-        </Field>
+        <Show when={isManaging()}>
+          <div class="investor-selection">
+            <Form of={investorCheckForm} onSubmit={handleCheckInvestor}>
+              <Field
+                of={investorCheckForm}
+                name="investorEmail"
+                validate={[
+                  required("Please enter investor's email."),
+                  email('Please enter a valid email address.'),
+                ]}
+              >
+                {(field) =>
+                  <TextField
+                    inputProps={{ ...remapFieldProps(field.props) }}
+                    fullWidth
+                    type="email"
+                    label="Managed investor email"
+                    onChange={() => setEmailChanged(true)}
+                    color={!investorId.error && investorId() && !emailChanged() ? "success" : "secondary"}
+                    focused={!investorId.error && investorId() && !emailChanged() ? true : undefined}
+                    variant="outlined"
+                    required
+                    value={field.value || ''}
+                    error={Boolean(field.error) || (investorId.error && !emailChanged())}
+                    helperText={field.error}
+                  />}
+              </Field>
 
-        {/* TODO: Add color pickers */}
-        <Field
-          of={createPortfolioForm}
-          name="color"
-        >
-          {(field) =>
-            <TextField
-              inputProps={{ ...remapFieldProps(field.props) }}
-              fullWidth
-              label="Portfolio color"
-              color="secondary"
-              variant="outlined"
-              required
-              value={field.value}
-              error={Boolean(field.error)}
-              helperText={field.error}
-            />}
-        </Field>
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                disabled={investorId.loading || investorCheckForm.invalid}
+              >
+                <Show when={investorId.loading} fallback="Check user">
+                  <CircularProgress size={24} />
+                </Show>
+              </Button>
 
-        <div class="portfolio-form-button">
+              <ErrorMessage resource={!emailChanged() ? investorId : null} />
+
+              <SuccessMessage resource={!emailChanged() ? investorId : null} successMessage="User is checked. You can continue with portfolio creation." />
+
+            </Form>
+
+          </div>
+        </Show>
+      </div>
+
+      <div class="portfolio-creation-form">
+        <Form of={createPortfolioForm} onSubmit={handleSubmit}>
+          <h3>Portfolio information</h3>
+
+          {/* Invisible field only for the form to have this value */}
+          <Field of={createPortfolioForm} name="investorId">
+            {(field) => null}
+          </Field>
+
+          <Field
+            of={createPortfolioForm}
+            name="name"
+            validate={[
+              required('Please enter portfolio name.'),
+              maxLength(20, 'Max length is 20 characters.'),
+            ]}
+          >
+            {(field) =>
+              <TextField
+                inputProps={{ ...remapFieldProps(field.props) }}
+                fullWidth
+                label="Portfolio name"
+                color="secondary"
+                variant="outlined"
+                required
+                value={field.value}
+                error={Boolean(field.error)}
+                helperText={field.error}
+              />}
+          </Field>
+          <Field
+            of={createPortfolioForm}
+            name="description"
+            validate={[
+              maxLength(240, 'Max length is 240 characters.'),
+            ]}
+          >
+            {(field) =>
+              <TextField
+                inputProps={{ ...remapFieldProps(field.props) }}
+                fullWidth
+                label="Portfolio description"
+                color="secondary"
+                variant="outlined"
+                required
+                value={field.value}
+                error={Boolean(field.error)}
+                helperText={field.error}
+              />}
+          </Field>
+          <Field
+            of={createPortfolioForm}
+            name="url"
+          >
+            {(field) =>
+              <TextField
+                inputProps={{ ...remapFieldProps(field.props) }}
+                fullWidth
+                label="Portfolio url"
+                color="secondary"
+                variant="outlined"
+                required
+                value={field.value}
+                error={Boolean(field.error)}
+                helperText={field.error}
+              />}
+          </Field>
+
+          {/* TODO: Add color pickers */}
+          <Field
+            of={createPortfolioForm}
+            name="color"
+          >
+            {(field) =>
+              <TextField
+                inputProps={{ ...remapFieldProps(field.props) }}
+                fullWidth
+                label="Portfolio color"
+                color="secondary"
+                variant="outlined"
+                required
+                value={field.value}
+                error={Boolean(field.error)}
+                helperText={field.error}
+              />}
+          </Field>
+
           <Button
             type="submit"
             color="secondary"
             variant="contained"
             fullWidth
-            disabled={portfolio.loading || createPortfolioForm.invalid}
+            disabled={creationButtonDisabled()}
           >
             {portfolio.loading ? (<CircularProgress size={24} />) : "Create portfolio"}
           </Button>
-        </div>
 
-        {portfolio.error && portfolio.error.message
-          ? Array.isArray(portfolio.error.message)
-            ? <For each={portfolio.error.message}>
-              {(item) => <span class="error-message">{item}</span>}
-            </For>
-            : <span class="error-message">{portfolio.error?.message}</span>
-          : null}
-        <Show when={!portfolio.error && portfolio()}>
-          <span class="success-message">
-            Portfolio has been successfully created
-          </span>
-        </Show>
-      </Form>
+          <ErrorMessage resource={portfolio} />
+
+          <SuccessMessage resource={portfolio} successMessage="Portfolio has been successfully created" />
+
+        </Form>
+      </div>
 
     </StyledCreatePortfolio>
   )

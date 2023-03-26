@@ -8,6 +8,9 @@ interface IStyledCreatePortfolioProps {
 export const StyledCreatePortfolio = styled('div') <IStyledCreatePortfolioProps>`
   padding: 20px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   .header-content {
     display: flex;
@@ -18,29 +21,40 @@ export const StyledCreatePortfolio = styled('div') <IStyledCreatePortfolioProps>
   h3 {
     margin-bottom: 16px;
   }
-  
-  form {
+
+  .owner-selection {
     padding: 20px;
     width: 22rem;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
     background-color: ${props => props.colors?.primary[700]};
 
-    div.MuiInputBase-root {
-      background-color: ${props => props.colors?.primary[900]};
-    }
+    .investor-selection {
+      margin-top: 16px;
 
-    .portfolio-form-button {
-      margin-top: 2rem;
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
     }
+  }
+  
+  .portfolio-creation-form {
 
-    .error-message {
-      color: var(--colorError);
+    form {
+      padding: 20px;
+      width: 22rem;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background-color: ${props => props.colors?.primary[700]};
+  
+      button {
+        margin-top: 2rem;
+      }
     }
+  }
 
-    .success-message {
-      color: var(--colorSuccess);
-    }
+  div.MuiInputBase-root {
+    background-color: ${props => props.colors?.primary[900]};
   }
 `;
