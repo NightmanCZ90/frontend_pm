@@ -20,6 +20,27 @@ export const StyledEditPortfolio = styled('div') <IStyledEditPortfolioProps>`
 
   h3 {
     margin-bottom: 16px;
+
+    span {
+      margin-left: 0.5rem;
+      color: ${props => props.colors?.red[300]};
+    }
+  }
+
+  .owner-selection {
+    width: 22rem;
+    padding: 20px;
+    background-color: ${props => props.colors?.primary[700]};
+
+    h4 {
+      margin-bottom: 16px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
   }
 
   .portfolio-edit-form {

@@ -2,24 +2,38 @@ import { createForm, Field, Form, maxLength, required, setValue, SubmitEvent } f
 import { A, useParams } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
-import { Component, createEffect, createResource, createSignal, Show } from "solid-js";
+import { Component, createEffect, createResource, createSignal, Match, Show, Switch } from "solid-js";
 import ErrorMessage from "../../components/ErrorMessage";
 import Header from "../../components/Header";
 import SuccessMessage from "../../components/SuccessMessage";
 import RestApiClient from "../../services/RestApiClient";
+import { useSelector } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
-import { remapFieldProps } from "../../utils/helpers";
+import { PortfolioOwnership } from "../../types";
+import { generatePortfolioOwnership, generateUserName, remapFieldProps } from "../../utils/helpers";
 import { StyledEditPortfolio } from "./EditPortfolio.styles";
 
 const getPortfolio = async (id: string) => {
   return RestApiClient.getPortfolio(id);
 }
 
+const linkPortfolio = async (id: string, payload: InvestorEmailForm) => {
+  return RestApiClient.linkPortfolio(id, payload);
+}
+
+// const unlinkPortfolio = async (id: string) => {
+//   return RestApiClient.unlinkPortfolio(id);
+// }
+
 const updatePortfolio = async (id: string, portfolio: EditPortfolioForm) => {
   return RestApiClient.updatePortfolio(id, portfolio);
 }
 
-export type EditPortfolioForm = {
+type InvestorEmailForm = {
+  email: string;
+}
+
+type EditPortfolioForm = {
   investorId: number | null;
   name: string,
   description: string,
@@ -39,19 +53,36 @@ interface IEditPortfolioProps {
 }
 
 const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
+  const params = useParams();
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
-  const params = useParams();
 
-  const [portfolio] = createResource(params.id, getPortfolio);
+  // TODO: Proxy is only auth, currentUser is NOT!!
+  const { auth } = useSelector();
+
+  const [portfolio, { refetch }] = createResource(params.id, getPortfolio);
+
+  const investorEmailForm = createForm<InvestorEmailForm>({ validateOn: "touched" });
+
+  const [linkInvestorEmail, setLinkInvestorEmail] = createSignal<InvestorEmailForm | null>(null);
+  const [linkedPortfolio] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.id, payload));
+
+  // const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
+  // const [unlinkedPortfolio] = createResource(investorEmail, () => unlinkPortfolio());
+
   const editPortfolioForm = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
 
   const [formData, setFormData] = createSignal<EditPortfolioForm | null>(null);
   const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.id, formData));
 
   createEffect(() => {
-    if (!portfolio.error && portfolio()) {
-      // setValue(editPortfolioForm, 'investorId', portfolio()?.portfolioManager || '');
+    if (!linkedPortfolio.error && linkedPortfolio()) {
+      refetch();
+    }
+  });
+
+  createEffect(() => {
+    if ((!portfolio.error && portfolio())) {
       setValue(editPortfolioForm, 'name', portfolio()?.name || '');
       setValue(editPortfolioForm, 'description', portfolio()?.description || '');
       setValue(editPortfolioForm, 'url', portfolio()?.url || '');
@@ -67,6 +98,21 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   }
 
   const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || updatedPortfolio.loading;
+
+  const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
+
+  const getOwnershipTitle = () => {
+    if (ownership() === PortfolioOwnership.Managed || ownership() === PortfolioOwnership.Unconfirmed) return `Managed by ${generateUserName(portfolio()?.portfolioManager)}`;
+    if (ownership() === PortfolioOwnership.Managing) return `Managing for ${generateUserName(portfolio()?.user)}`;
+    return 'Personal';
+  };
+
+  const handleLink = (values: InvestorEmailForm, event: SubmitEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setLinkInvestorEmail(values);
+  }
 
   return (
     <StyledEditPortfolio class="EditPortfolio" colors={colors()}>
@@ -84,7 +130,53 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
             <Header title={`Edit portfolio ${portfolio()?.name || ''}`} subtitle="You can create portfolio here" />
           </div>
 
-          {/* Add ownership selection */}
+          <div class="owner-selection">
+            <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span>{portfolio.loading || linkedPortfolio.loading ? <CircularProgress size={16} /> : null}</h3>
+
+            <Switch>
+
+              <Match when={ownership() === PortfolioOwnership.Personal}>
+                <h4>Link to investor</h4>
+                <Form of={investorEmailForm} onSubmit={handleLink}>
+                  <Field
+                    of={investorEmailForm}
+                    name="email"
+                  >
+                    {(field) =>
+                      <TextField
+                        inputProps={{ ...remapFieldProps(field.props) }}
+                        color="secondary"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        label="Investor email"
+                        value={field.value || ''}
+                        disabled={portfolio.loading || linkedPortfolio.loading}
+                        error={Boolean(field.error)}
+                        helperText={field.error}
+
+                      />
+                    }
+                  </Field>
+
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    variant="contained"
+                    disabled={portfolio.loading || linkedPortfolio.loading || investorEmailForm.invalid}
+                  >
+                    {(portfolio.loading || linkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Link investor'}
+                  </Button>
+
+                  <ErrorMessage resource={linkedPortfolio} />
+
+                  <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
+
+                </Form>
+              </Match>
+
+            </Switch>
+          </div>
 
           <div class="portfolio-edit-form">
             <Form of={editPortfolioForm} onSubmit={handleSubmit}>
