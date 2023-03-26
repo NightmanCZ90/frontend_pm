@@ -22,11 +22,11 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
   const params = useParams();
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
-  const { auth: { currentUser } } = useSelector();
+  const { auth } = useSelector();
 
   const [portfolio] = createResource(params.id, getPortfolio);
 
-  const ownership = () => generatePortfolioOwnership({ userId: currentUser?.id, portfolio: portfolio() });
+  const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
 
   const getOwnershipTitle = () => {
     if (ownership() === PortfolioOwnership.Managed || ownership() === PortfolioOwnership.Unconfirmed) return `Managed by ${generateUserName(portfolio()?.portfolioManager)}`;
