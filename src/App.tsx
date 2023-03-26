@@ -12,6 +12,16 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import useBootstrap from './hooks/useBootstrap';
 import UserAccount from './pages/UserAccount';
+import PortfolioDetail from './pages/PortfolioDetail';
+import CreatePortfolio from './pages/CreatePortfolio';
+import EditPortfolio from './pages/EditPortfolio';
+
+// TODO: Add Internationalization and Localization
+export const formatter = new Intl.NumberFormat('en-US');
+export const formatterWithCurrency = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+})
 
 const App: Component = () => {
   useAxiosPrivate();
@@ -39,7 +49,16 @@ const App: Component = () => {
           <div class='content'>
             <Routes>
               <Route path={'/'} element={<Dashboard />} />
-              <Route path={'/portfolios'} element={<Portfolios />} />
+
+              <Route path={'/portfolios'}>
+                <Route path={'/'} element={<Portfolios />} />
+                <Route path={'/create'} element={<CreatePortfolio />} />
+                <Route path={'/:id'}>
+                  <Route path={'/'} element={<PortfolioDetail />} />
+                  <Route path={'/edit'} element={<EditPortfolio />} />
+                </Route>
+              </Route>
+
               <Route path={'/user-account'} element={<UserAccount />} />
             </Routes>
           </div>

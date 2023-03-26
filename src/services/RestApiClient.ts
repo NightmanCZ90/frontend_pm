@@ -1,4 +1,4 @@
-import { Role, Tokens, User } from '../types';
+import { Portfolio, PortfolioTypes, Role, Tokens, User } from '../types';
 import ApiClient from './ApiClient';
 import { BASE_URL } from './axios';
 
@@ -70,74 +70,73 @@ class RestApiClient extends ApiClient {
   //  * Portfolios
   //  */
 
-  // async confirmInvestor(investorEmail: string) {
-  //   return this.axiosRequest<{ id: number }>({
-  //     url: '/users/confirm',
-  //     method: 'POST',
-  //     body: {
-  //       email: investorEmail,
-  //     },
-  //   })
-  // }
+  async checkInvestor(investorEmail: string) {
+    return this.axiosRequest<{ id: number }>({
+      url: '/users/check',
+      method: 'POST',
+      body: {
+        email: investorEmail,
+      },
+    })
+  }
 
-  // async getUsersPortfolios() {
-  //   // return this.axiosRequest<PortfolioTypes>({
-  //   return this.axiosRequest({
-  //     url: '/portfolios',
-  //     method: 'GET',
-  //   })
-  // }
+  async getUsersPortfolios() {
+    return this.axiosRequest<PortfolioTypes>({
+      url: '/portfolios',
+      method: 'GET',
+    })
+  }
 
-  // async getPortfolio(portfolioId: number) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}`,
-  //     method: 'GET',
-  //   })
-  // }
+  async getPortfolio(portfolioId: string | number) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}`,
+      method: 'GET',
+    })
+  }
 
-  // async createPortfolio(body: {
-  //   name: string,
-  //   description: string,
-  //   color: string,
-  //   url: string,
-  //   investorId: number | null,
-  // }) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: '/portfolios/create',
-  //     method: 'POST',
-  //     body,
-  //   })
-  // }
+  async createPortfolio(body: {
+    name: string,
+    description: string,
+    color: string,
+    url: string,
+    investorId: number | null,
+  }) {
+    return this.axiosRequest<Portfolio>({
+      url: '/portfolios/create',
+      method: 'POST',
+      body,
+    })
+  }
 
-  // async updatePortfolio(portfolioId: number, body: {
-  //   name: string,
-  //   description: string,
-  //   color: string,
-  //   url: string,
-  // }) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}`,
-  //     method: 'PUT',
-  //     body,
-  //   })
-  // }
+  async updatePortfolio(portfolioId: string | number, body: {
+    name: string,
+    description: string,
+    color: string,
+    url: string,
+  }) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}`,
+      method: 'PUT',
+      body,
+    })
+  }
 
-  // async linkPortfolio(portfolioId: number, body: {
-  //   email: string,
-  // }) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}/link`,
-  //     method: 'PUT',
-  //     body,
-  //   })
-  // }
+  async linkPortfolio(portfolioId: string | number, body: {
+    email: string,
+  }) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}/link`,
+      method: 'PATCH',
+      body,
+    })
+  }
 
-  // async unlinkPortfolio(portfolioId: number) {
-  //   return this.axiosRequest<Portfolio>({
-  //     url: `/portfolios/${portfolioId}/unlink`,
-  //     method: 'PUT',
-  //   })
-  // }
+  async unlinkPortfolio(portfolioId: string | number) {
+    return this.axiosRequest<Portfolio>({
+      url: `/portfolios/${portfolioId}/unlink`,
+      method: 'PATCH',
+    })
+  }
 
   // async confirmPortfolio(portfolioId: number) {
   //   return this.axiosRequest<Portfolio>({

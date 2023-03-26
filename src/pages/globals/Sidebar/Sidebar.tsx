@@ -65,7 +65,7 @@ const Sidebar: Component<ISidebarProps> = () => {
         <Show when={isExpanded()} fallback={<div class="break" />}>
           <Typography
             variant="h6"
-            color={colors().grey[300]}
+            color={colors().grey[200]}
           >
             General
           </Typography>
@@ -84,7 +84,7 @@ const Sidebar: Component<ISidebarProps> = () => {
         <Show when={isExpanded()} fallback={<div class="break" />}>
           <Typography
             variant="h6"
-            color={colors().grey[300]}
+            color={colors().grey[200]}
           >
             Portfolios
           </Typography>

@@ -20,6 +20,8 @@ export type Colors = {
   greenAccent: ColorShade;
   redAccent: ColorShade;
   blueAccent: ColorShade;
+  green: ColorShade;
+  red: ColorShade;
 }
 
 // Color design tokens export
@@ -38,15 +40,15 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         900: "#141414",
       },
       primary: {
-        100: "#d0d1d5",
-        200: "#a1a4ab",
-        300: "#727681",
-        400: "#1F2A40",
-        500: "#141b2d",
-        600: "#101624",
-        700: "#0c101b",
-        800: "#080b12",
-        900: "#040509",
+        100: "#d2d4d9",
+        200: "#a5aab3",
+        300: "#797f8c",
+        400: "#4c5566",
+        500: "#1f2a40",
+        600: "#192233",
+        700: "#131926",
+        800: "#0c111a",
+        900: "#06080d"
       },
       greenAccent: {
         100: "#dbf5ee",
@@ -81,6 +83,28 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         800: "#2a2d64",
         900: "#151632",
       },
+      green: {
+        100: "#d4ffd4",
+        200: "#a8ffa8",
+        300: "#7dff7d",
+        400: "#51ff51",
+        500: "#26ff26",
+        600: "#1ecc1e",
+        700: "#179917",
+        800: "#0f660f",
+        900: "#083308"
+      },
+      red: {
+        100: "#ffd4d4",
+        200: "#ffa8a8",
+        300: "#ff7d7d",
+        400: "#ff5151",
+        500: "#ff2626",
+        600: "#cc1e1e",
+        700: "#991717",
+        800: "#660f0f",
+        900: "#330808"
+      },
     }
     : {
       grey: {
@@ -94,16 +118,17 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         800: "#c2c2c2",
         900: "#e0e0e0",
       },
+
       primary: {
-        100: "#040509",
-        200: "#080b12",
-        300: "#0c101b",
-        400: "#f2f0f0", // manually changed from #101624
-        500: "#141b2d",
-        600: "#1F2A40",
-        700: "#727681",
-        800: "#a1a4ab",
-        900: "#d0d1d5",
+        100: "#202122",
+        200: "#404244",
+        300: "#616267",
+        400: "#818389",
+        500: "#a1a4ab",
+        600: "#b4b6bc",
+        700: "#c7c8cd",
+        800: "#d9dbdd",
+        900: "#ecedee",
       },
       greenAccent: {
         100: "#0f2922",
@@ -138,6 +163,28 @@ export const tokens = (mode: "dark" | "light"): Colors => ({
         800: "#c3c6fd",
         900: "#e1e2fe",
       },
+      green: {
+        100: "#083308",
+        200: "#0f660f",
+        300: "#179917",
+        400: "#1ecc1e",
+        500: "#26ff26",
+        600: "#51ff51",
+        700: "#7dff7d",
+        800: "#a8ffa8",
+        900: "#d4ffd4",
+      },
+      red: {
+        100: "#330808",
+        200: "#660f0f",
+        300: "#991717",
+        400: "#cc1e1e",
+        500: "#ff2626",
+        600: "#ff5151",
+        700: "#ff7d7d",
+        800: "#ffa8a8",
+        900: "#ffd4d4",
+      },
     }),
 });
 
@@ -154,7 +201,7 @@ export const themeSettings = (mode: "dark" | "light") => {
             main: colors.primary[500],
           },
           secondary: {
-            main: colors.greenAccent[500],
+            main: colors.greenAccent[300],
           },
           neutral: {
             dark: colors.grey[700],
@@ -162,16 +209,16 @@ export const themeSettings = (mode: "dark" | "light") => {
             light: colors.grey[100],
           },
           background: {
-            default: colors.primary[500],
+            default: colors.primary[900],
           },
         }
         : {
           // Palette values for light mode
           primary: {
-            main: colors.primary[100],
+            main: colors.primary[500],
           },
           secondary: {
-            main: colors.greenAccent[500],
+            main: colors.greenAccent[300],
           },
           neutral: {
             dark: colors.grey[700],
@@ -227,9 +274,13 @@ export const ThemeContext = createContext<ThemeContextValue>([
 
 
 export const CustomThemeProvider: ParentComponent = (props) => {
-  const [mode, setMode] = createSignal<"dark" | "light">("dark");
+  const storedMode = localStorage.getItem('themeMode') as ("dark" | "light" | null);
+  const [mode, setMode] = createSignal<"dark" | "light">(storedMode || "dark");
 
-  const toggleColorMode = () => setMode((prev) => (prev === "light" ? "dark" : "light"));
+  const toggleColorMode = () => {
+    localStorage.setItem('themeMode', mode() === "light" ? "dark" : "light");
+    setMode((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   const settings = () => themeSettings(mode());
 

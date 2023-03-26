@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "../store";
 async function getCurrentUser() {
   const dispatch = useDispatch();
 
-  return dispatch.auth.getCurrentUser(undefined);
+  return dispatch.auth.getCurrentUser();
 }
 
 const useBootstrap = () => {

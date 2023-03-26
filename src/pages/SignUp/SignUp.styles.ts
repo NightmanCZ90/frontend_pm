@@ -19,7 +19,7 @@ interface IStyledSignUpFormProps {
 
 export const StyledSignUpForm = styled(Box) <IStyledSignUpFormProps>`
   padding: 3rem 5rem;
-  background-color: ${props => props.colors?.primary[400]};
+  background-color: ${props => props.colors?.primary[700]};
 
   form {
     width: 20rem;
@@ -28,17 +28,13 @@ export const StyledSignUpForm = styled(Box) <IStyledSignUpFormProps>`
     gap: 1rem;
 
     div.MuiInputBase-root {
-      background-color: ${props => props.colors?.primary[500]};
+      background-color: ${props => props.colors?.primary[800]};
     }
 
     .signup-form-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 2rem;
-    }
-
-    .error-message {
-      color: var(--colorError);
     }
   }
 `;

@@ -8,7 +8,7 @@ interface IStyledSidebarProps {
 }
 
 export const StyledSidebar = styled(Box) <IStyledSidebarProps>`
-  background-color: ${props => props.colors?.primary[400]};
+  background-color: ${props => props.colors?.primary[700]};
   width: ${({ isExpanded }) => isExpanded ? '200px' : '66px'};
   transition: width 0.3s ease-in-out;
   overflow: hidden;

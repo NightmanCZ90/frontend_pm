@@ -13,7 +13,7 @@ export interface RestApiError extends Error {
 }
 
 interface RequestOptions {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   url: string,
   query?: Query,
   body?: any,

@@ -23,7 +23,7 @@ const Topbar: Component = () => {
   }
 
   return (
-    <StyledTopbar>
+    <StyledTopbar class="Topbar">
       <div>
 
         <IconButton onClick={toggleColorMode}>

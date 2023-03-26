@@ -3,7 +3,7 @@ import { RegisterForm } from "../pages/SignUp/SignUp";
 import { UserAccountForm } from "../pages/UserAccount/UserAccount";
 import RestApiClient from "../services/RestApiClient";
 import { useDispatch, useSelector } from "../store";
-import { Role, Tokens, User } from "../types";
+import { Tokens, User } from "../types";
 
 type AuthState = {
   currentUser: User | null;
@@ -49,6 +49,11 @@ export const auth = {
       const dispatch = useDispatch();
       const currentUser = await RestApiClient.getCurrentUser();
 
+      // TODO: Implement currency
+      if (!currentUser.currency) {
+        currentUser.currency = 'USD';
+      }
+
       if (currentUser) {
         dispatch.auth.setCurrentUser(currentUser);
       }
@@ -58,7 +63,7 @@ export const auth = {
       const dispatch = useDispatch();
       const { auth: { currentUser } } = useSelector();
 
-      if (!currentUser) return
+      if (!currentUser) return;
 
       const updatedUser = await RestApiClient.updateUser(currentUser.id, { ...payload, role: currentUser.role });
 
