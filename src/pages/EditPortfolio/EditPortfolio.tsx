@@ -29,6 +29,10 @@ const updatePortfolio = async (id: string, portfolio: EditPortfolioForm) => {
   return RestApiClient.updatePortfolio(id, portfolio);
 }
 
+const deletePortfolio = async (id: string) => {
+  return await RestApiClient.deletePortfolio(id);
+}
+
 type InvestorEmailForm = {
   email: string;
 }
@@ -75,6 +79,11 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [formData, setFormData] = createSignal<EditPortfolioForm | null>(null);
   const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.id, formData));
 
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
+  const [deletePortfolioId, setDeletePortfolioId] = createSignal<string | null>(null);
+
+  const [deletedPortfolio] = createResource(deletePortfolioId, deletePortfolio);
+
   createEffect(() => {
     if ((!portfolio.error && portfolio())) {
       setValues(editPortfolioForm, {
@@ -113,6 +122,12 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
     }
   });
 
+  createEffect(() => {
+    if (deletedPortfolio()) {
+      navigate('/portfolios');
+    }
+  });
+
   const handleSubmit = (values: EditPortfolioForm, event: SubmitEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -120,7 +135,8 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
     setFormData(values);
   }
 
-  const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading;
+  const formLoading = () => updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading || deletedPortfolio.loading;
+  const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || formLoading();
 
   const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
 
@@ -155,7 +171,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
             </div>
 
             <div class="owner-selection">
-              <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span><Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}><CircularProgress size={16} /></Show></h3>
+              <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span><Show when={formLoading()}><CircularProgress size={16} /></Show></h3>
 
               <Switch>
 
@@ -179,7 +195,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                           required
                           label="Investor email"
                           value={field.value || ''}
-                          disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                          disabled={formLoading()}
                           error={Boolean(field.error)}
                           helperText={field.error}
 
@@ -191,9 +207,9 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       type="submit"
                       color="secondary"
                       variant="contained"
-                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading || investorEmailForm.invalid}
+                      disabled={formLoading() || investorEmailForm.invalid}
                     >
-                      <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Link investor'}><CircularProgress size={16} /></Show>
+                      <Show when={formLoading()} fallback={'Link investor'}><CircularProgress size={16} /></Show>
                     </Button>
                   </InvestorEmail.Form>
                 </Match>
@@ -204,9 +220,9 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     color="secondary"
                     variant="contained"
                     onClick={() => setUnlinkPortfolioId(params.id)}
-                    disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                    disabled={formLoading()}
                   >
-                    <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Unlink investor'}><CircularProgress size={16} /></Show>
+                    <Show when={formLoading()} fallback={'Unlink investor'}><CircularProgress size={16} /></Show>
                   </Button>
                 </Match>
 
@@ -216,9 +232,9 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     color="secondary"
                     variant="contained"
                     onClick={() => setUnlinkPortfolioId(params.id)}
-                    disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                    disabled={formLoading()}
                   >
-                    <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Unlink from portfolio'}><CircularProgress size={16} /></Show>
+                    <Show when={formLoading()} fallback={'Unlink from portfolio'}><CircularProgress size={16} /></Show>
                   </Button>
                 </Match>
 
@@ -239,8 +255,8 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
                 {/* Invisible field only for the form to have this value */}
                 {/* <Field of={editPortfolioForm} name="investorId">
-            {(field) => null}
-          </Field> */}
+                    {(field) => null}
+                  </Field> */}
 
                 <EditPortfolio.Field
                   name="name"
@@ -261,7 +277,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       value={field.value}
                       error={Boolean(field.error)}
                       helperText={field.error}
-                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                      disabled={formLoading()}
                     />}
                 </EditPortfolio.Field>
                 <EditPortfolio.Field
@@ -282,7 +298,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       value={field.value}
                       error={Boolean(field.error)}
                       helperText={field.error}
-                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                      disabled={formLoading()}
                     />}
                 </EditPortfolio.Field>
                 <EditPortfolio.Field
@@ -300,7 +316,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       value={field.value}
                       error={Boolean(field.error)}
                       helperText={field.error}
-                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                      disabled={formLoading()}
                     />}
                 </EditPortfolio.Field>
 
@@ -320,7 +336,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       value={field.value}
                       error={Boolean(field.error)}
                       helperText={field.error}
-                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                      disabled={formLoading()}
                     />}
                 </EditPortfolio.Field>
 
@@ -331,7 +347,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   fullWidth
                   disabled={creationButtonDisabled()}
                 >
-                  <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Update portfolio'}><CircularProgress size={16} /></Show>
+                  <Show when={formLoading()} fallback={'Update portfolio'}><CircularProgress size={16} /></Show>
                 </Button>
 
                 <ErrorMessage resource={updatedPortfolio} />
@@ -340,6 +356,49 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
               </EditPortfolio.Form>
             </div>
+
+            <Show when={ownership() === PortfolioOwnership.Managing || ownership() === PortfolioOwnership.Personal}>
+              <div class="portfolio-delete-form">
+                <Show
+                  when={deleteConfirmVisible()}
+                  fallback={
+                    <Button
+                      color="error"
+                      variant="contained"
+                      fullWidth
+                      disabled={creationButtonDisabled()}
+                      onClick={() => setDeleteConfirmVisible(true)}
+                    >
+                      <Show when={formLoading()} fallback={'Delete portfolio'}><CircularProgress size={16} /></Show>
+                    </Button>
+                  }
+                >
+                  <h3>
+                    Are you sure you want to delete this portfolio?
+                  </h3>
+                  <div class="delete-buttons">
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      fullWidth
+                      disabled={creationButtonDisabled()}
+                      onClick={() => setDeleteConfirmVisible(false)}
+                    >
+                      <Show when={formLoading()} fallback={'Cancel'}><CircularProgress size={16} /></Show>
+                    </Button>
+                    <Button
+                      color="error"
+                      variant="contained"
+                      fullWidth
+                      disabled={creationButtonDisabled()}
+                      onClick={() => setDeletePortfolioId(params.id)}
+                    >
+                      <Show when={formLoading()} fallback={'Delete'}><CircularProgress size={16} /></Show>
+                    </Button>
+                  </div>
+                </Show>
+              </div>
+            </Show>
           </>}
 
         </Show>

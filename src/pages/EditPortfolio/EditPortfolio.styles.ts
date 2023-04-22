@@ -59,6 +59,19 @@ export const StyledEditPortfolio = styled('div') <IStyledEditPortfolioProps>`
     }
   }
 
+  .portfolio-delete-form {
+    padding: 20px;
+    width: 22rem;
+    display: flex;
+    flex-direction: column;
+    background-color: ${props => props.colors?.primary[700]};
+    
+    .delete-buttons {
+      display: flex;
+      gap: 16px;
+    }
+  }
+
   div.MuiInputBase-root {
     background-color: ${props => props.colors?.primary[900]};
   }
