@@ -35,12 +35,11 @@ abstract class ApiClient {
 
   async axiosRequest<T>(options: RequestOptions) {
     try {
-      const { data } = await axiosPrivate.request<T>({
+      return await axiosPrivate.request<T>({
         url: options.url,
         method: options.method,
         data: options.body,
-      })
-      return data;
+      });
     } catch (err: any) {
       // TODO: Fix Error types
       const error: RestApiError = new Error();

@@ -18,22 +18,26 @@ class RestApiClient extends ApiClient {
     password: string,
     confirmPassword: string,
   }) {
-    return this.axiosRequest<Tokens>({
+    const { data } = await this.axiosRequest<Tokens>({
       url: '/auth/signup',
       method: 'POST',
       body,
-    })
+    });
+
+    return data;
   }
 
   async signIn(body: {
     email: string,
     password: string,
   }) {
-    return this.axiosRequest<Tokens>({
+    const { data } = await this.axiosRequest<Tokens>({
       url: '/auth/signin',
       method: 'POST',
       body,
-    })
+    });
+
+    return data;
   }
 
   /**
@@ -48,10 +52,12 @@ class RestApiClient extends ApiClient {
   // }
 
   async getCurrentUser() {
-    return this.axiosRequest<User>({
+    const { data } = await this.axiosRequest<User>({
       url: '/users/current',
       method: 'GET'
-    })
+    });
+
+    return data;
   }
 
   async updateUser(userId: number, body: {
@@ -59,11 +65,13 @@ class RestApiClient extends ApiClient {
     lastName: string,
     role: Role,
   }) {
-    return this.axiosRequest<User>({
+    const { data } = await this.axiosRequest<User>({
       url: `/users/${userId}`,
       method: 'PUT',
       body,
-    })
+    });
+
+    return data;
   }
 
   // /**
@@ -71,27 +79,33 @@ class RestApiClient extends ApiClient {
   //  */
 
   async checkInvestor(investorEmail: string) {
-    return this.axiosRequest<{ id: number }>({
+    const { data } = await this.axiosRequest<{ id: number }>({
       url: '/users/check',
       method: 'POST',
       body: {
         email: investorEmail,
       },
-    })
+    });
+
+    return data;
   }
 
   async getUsersPortfolios() {
-    return this.axiosRequest<PortfolioTypes>({
+    const { data } = await this.axiosRequest<PortfolioTypes>({
       url: '/portfolios',
       method: 'GET',
-    })
+    });
+
+    return data;
   }
 
   async getPortfolio(portfolioId: string | number) {
-    return this.axiosRequest<Portfolio>({
+    const { data } = await this.axiosRequest<Portfolio>({
       url: `/portfolios/${portfolioId}`,
       method: 'GET',
-    })
+    });
+
+    return data;
   }
 
   async createPortfolio(body: {
@@ -101,11 +115,13 @@ class RestApiClient extends ApiClient {
     url: string,
     investorId: number | null,
   }) {
-    return this.axiosRequest<Portfolio>({
+    const { data } = await this.axiosRequest<Portfolio>({
       url: '/portfolios/create',
       method: 'POST',
       body,
-    })
+    });
+
+    return data;
   }
 
   async updatePortfolio(portfolioId: string | number, body: {
@@ -114,28 +130,45 @@ class RestApiClient extends ApiClient {
     color: string,
     url: string,
   }) {
-    return this.axiosRequest<Portfolio>({
+    const { data } = await this.axiosRequest<Portfolio>({
       url: `/portfolios/${portfolioId}`,
       method: 'PUT',
       body,
-    })
+    });
+
+    return data;
+  }
+
+  async deletePortfolio(portfolioId: string | number) {
+    const result = await this.axiosRequest<void>({
+      url: `/portfolios/${portfolioId}`,
+      method: 'DELETE',
+    });
+
+    if (result.status === 204) return true;
+
+    return false;
   }
 
   async linkPortfolio(portfolioId: string | number, body: {
     email: string,
   }) {
-    return this.axiosRequest<Portfolio>({
+    const { data } = await this.axiosRequest<Portfolio>({
       url: `/portfolios/${portfolioId}/link`,
       method: 'PATCH',
       body,
-    })
+    });
+
+    return data;
   }
 
   async unlinkPortfolio(portfolioId: string | number) {
-    return this.axiosRequest<Portfolio>({
+    const { data } = await this.axiosRequest<Portfolio>({
       url: `/portfolios/${portfolioId}/unlink`,
       method: 'PATCH',
-    })
+    });
+
+    return data;
   }
 
   // async confirmPortfolio(portfolioId: number) {
