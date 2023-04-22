@@ -4,11 +4,11 @@ import { Button, IconButton } from "@suid/material";
 import { Component, createResource, Show } from "solid-js";
 import Header from "../../components/Header";
 import RestApiClient from "../../services/RestApiClient";
-import { useSelector } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { PortfolioOwnership } from "../../types";
 import { generatePortfolioOwnership, generateUserName } from "../../utils/helpers";
 import { StyledPortfolioDetail, StyledPortfolioDetailContent } from "./PortfolioDetail.styles";
+import { authStore } from "../../stores/AuthStore";
 
 const getPortfolio = async (id: string) => {
   return RestApiClient.getPortfolio(id);
@@ -22,7 +22,8 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
   const params = useParams();
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
-  const { auth } = useSelector();
+
+  const { auth } = authStore;
 
   const [portfolio] = createResource(params.id, getPortfolio);
 

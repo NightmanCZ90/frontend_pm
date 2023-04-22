@@ -1,15 +1,15 @@
 import { Route, RouteProps } from "@solidjs/router";
 import { Component, createSignal } from "solid-js";
-import { useSelector } from "../../store";
 import SignIn from "../SignIn";
 import SignUp from "../SignUp";
+import { authStore } from "../../stores/AuthStore";
 
 interface IGuardedRouteProps {
   component: Component;
 }
 
 const GuardedRoute: Component<IGuardedRouteProps & RouteProps<string>> = ({ component: GuardedComponent, ...rest }) => {
-  const { auth } = useSelector();
+  const { auth } = authStore;
 
   const [showLogin, setShowLogin] = createSignal(false);
 

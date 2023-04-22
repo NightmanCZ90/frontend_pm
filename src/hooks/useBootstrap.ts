@@ -1,14 +1,8 @@
 import { createResource } from "solid-js";
-import { useDispatch, useSelector } from "../store";
-
-async function getCurrentUser() {
-  const dispatch = useDispatch();
-
-  return dispatch.auth.getCurrentUser();
-}
+import { authStore, getCurrentUser } from "../stores/AuthStore";
 
 const useBootstrap = () => {
-  const { auth } = useSelector();
+  const { auth } = authStore;
 
   createResource(() => auth.tokens?.accessToken, getCurrentUser);
 }

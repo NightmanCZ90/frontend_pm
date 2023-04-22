@@ -1,17 +1,11 @@
 import { createForm, email, Field, Form, required, SubmitEvent } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField, Typography } from "@suid/material";
-import { Component, createResource, createSignal, Setter } from "solid-js";
+import { Component, createEffect, createResource, createSignal, Setter } from "solid-js";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useDispatch } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignIn, StyledSignInForm } from "./SignIn.styles";
-
-async function signIn(payload: LoginForm) {
-  const dispatch = useDispatch();
-
-  return dispatch.auth.signIn({ email: payload.email, password: payload.password });
-}
+import { signIn } from "../../stores/AuthStore";
 
 export type LoginForm = {
   email: string;

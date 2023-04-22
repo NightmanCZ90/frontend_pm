@@ -2,7 +2,6 @@ import { A, useLocation } from "@solidjs/router";
 import { Dashboard, DataSaverOff, Menu, MenuOpen } from "@suid/icons-material";
 import { Button, IconButton, Typography } from "@suid/material";
 import { Accessor, Component, createSignal, Show } from "solid-js";
-import { useSelector } from "../../../store";
 import { tokens, useThemeContext } from "../../../styles/theme";
 
 import { StyledSidebar } from "./Sidebar.styles";

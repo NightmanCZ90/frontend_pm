@@ -7,11 +7,11 @@ import ErrorMessage from "../../components/ErrorMessage";
 import Header from "../../components/Header";
 import SuccessMessage from "../../components/SuccessMessage";
 import RestApiClient from "../../services/RestApiClient";
-import { useSelector } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { PortfolioOwnership } from "../../types";
 import { generatePortfolioOwnership, generateUserName, remapFieldProps } from "../../utils/helpers";
 import { StyledEditPortfolio } from "./EditPortfolio.styles";
+import { authStore } from "../../stores/AuthStore";
 
 const getPortfolio = async (id: string) => {
   return RestApiClient.getPortfolio(id);
@@ -58,8 +58,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  // TODO: Proxy is only auth, currentUser is NOT!!
-  const { auth } = useSelector();
+  const { auth } = authStore;
 
   const [portfolio, { mutate }] = createResource(params.id, getPortfolio);
 
