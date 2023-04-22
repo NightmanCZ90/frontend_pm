@@ -1,9 +1,8 @@
+import { authStore, signOut } from '../stores/AuthStore';
 import axios from '../services/axios';
-import { useDispatch, useSelector } from '../store';
 
 const useRefreshToken = () => {
-  const dispatch = useDispatch()
-  const { auth } = useSelector();
+  const { auth, setAuth } = authStore;
 
   const refresh = async () => {
     try {
@@ -12,11 +11,11 @@ const useRefreshToken = () => {
       if (response?.data) {
         const { accessToken } = response.data;
 
-        if (auth.tokens) dispatch.auth.setTokens({ ...auth.tokens, accessToken });
+        if (auth.tokens) setAuth('tokens', { ...auth.tokens, accessToken });
       }
       return response?.data?.accessToken;
     } catch (err) {
-      dispatch.auth.signOut();
+      signOut();
     }
   }
   return refresh;

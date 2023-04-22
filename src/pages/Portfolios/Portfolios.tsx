@@ -4,18 +4,12 @@ import { Component, createResource, For, Show } from "solid-js";
 
 import Header from "../../components/Header";
 import PortfolioCard from "../../components/PortfolioCard";
-import { useDispatch, useSelector } from "../../store";
 import { StyledPortfolios, StyledPortfoliosContent } from "./Portfolios.styles";
-
-async function getPortfolios() {
-  const dispatch = useDispatch();
-
-  await dispatch.portfolios.getUsersPortfolios();
-}
+import { getUsersPortfolios, portfoliosStore } from "../../stores/PortfoliosStore";
 
 const Portfolios: Component = () => {
-  const { portfolios } = useSelector();
-  const [data] = createResource(getPortfolios);
+  const { portfolios } = portfoliosStore;
+  const [data] = createResource(getUsersPortfolios);
 
   return (
     <StyledPortfolios class="Portfolios">

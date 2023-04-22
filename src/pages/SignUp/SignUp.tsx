@@ -2,16 +2,10 @@ import { createForm, email, Field, Form, getValue, minLength, required, SubmitEv
 import { Button, CircularProgress, TextField, Typography } from "@suid/material";
 import { Component, createResource, createSignal, Setter } from "solid-js";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useDispatch } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledSignUp, StyledSignUpForm } from "./SignUp.styles";
-
-async function signUp(payload: RegisterForm) {
-  const dispatch = useDispatch();
-
-  return dispatch.auth.signUp({ email: payload.email, password: payload.password, confirmPassword: payload.confirmPassword });
-}
+import { signUp } from "../../stores/AuthStore";
 
 export type RegisterForm = {
   email: string;

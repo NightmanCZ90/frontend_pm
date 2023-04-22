@@ -1,12 +1,13 @@
 import { onCleanup } from 'solid-js';
 
 import { axiosPrivate } from '../services/axios';
-import { useSelector } from '../store';
 import useRefreshToken from './useRefreshToken';
+import { authStore } from '../stores/AuthStore';
 
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
-  const { auth } = useSelector();
+
+  const { auth } = authStore;
 
   const requestIntercept = axiosPrivate.interceptors.request.use(
     (config) => {

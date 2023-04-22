@@ -3,16 +3,10 @@ import { Button, CircularProgress, TextField } from "@suid/material";
 import { Component, createEffect, createResource, createSignal } from "solid-js";
 import ErrorMessage from "../../components/ErrorMessage";
 import Header from "../../components/Header";
-import { useDispatch, useSelector } from "../../store";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { remapFieldProps } from "../../utils/helpers";
 import { StyledUserAccount, StyledUserAccountContent } from './UserAccount.styles';
-
-async function updateCurrentUser(payload: UserAccountForm) {
-  const dispatch = useDispatch();
-
-  return dispatch.auth.updateCurrentUser(payload);
-}
+import { authStore, updateCurrentUser } from "../../stores/AuthStore";
 
 export type UserAccountForm = {
   firstName: string;
@@ -26,7 +20,8 @@ interface IUserAccountProps {
 const UserAccount: Component<IUserAccountProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
-  const { auth } = useSelector();
+
+  const { auth } = authStore;
 
   const userAccountForm = createForm<UserAccountForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<UserAccountForm | null>(null);
