@@ -42,57 +42,60 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
 
         <Show when={portfolio.state === 'ready' && portfolio()} fallback={'loading'}>
 
-          <div class="header-content">
-            <div class="left">
-              <A href={"/portfolios"} class="link-back">
-                <IconButton>
-                  <ChevronLeft />
-                </IconButton>
-              </A>
-              <Header title={portfolio()?.name || 'Portfolio detail'} subtitle="You can create and update transactions here" />
+          {(portfolio) => <>
+            <div class="header-content">
+              <div class="left">
+                <A href={"/portfolios"} class="link-back">
+                  <IconButton>
+                    <ChevronLeft />
+                  </IconButton>
+                </A>
+                <Header title={portfolio().name || 'Portfolio detail'} subtitle="You can create and update transactions here" />
+              </div>
+
+              <div class="right">
+                <A class="edit-button" href={`/portfolios/${portfolio().id}/edit`}>
+                  <Button color="secondary" variant="contained">
+                    Edit Portfolio
+                  </Button>
+                </A>
+              </div>
             </div>
 
-            <div class="right">
-              <A class="edit-button" href={`/portfolios/${portfolio()?.id}/edit`}>
-                <Button color="secondary" variant="contained">
-                  Edit Portfolio
-                </Button>
-              </A>
-            </div>
-          </div>
+            <StyledPortfolioDetailContent colors={colors()} class="PortfolioDetailContent">
 
-          <StyledPortfolioDetailContent colors={colors()} class="PortfolioDetailContent">
+              {/* TODO: Reorganize */}
 
-            {/* TODO: Reorganize */}
+              <section class="portfolio">
+                <div class="portfolio-layout">
+                  {/* TODO: Remove to implement portfolio graph */}
+                  <div class="circle" />
+                </div>
+              </section>
 
-            <section class="portfolio">
-              <div class="portfolio-layout">
-                {/* TODO: Remove to implement portfolio graph */}
-                <div class="circle" />
-              </div>
-            </section>
+              {/* TODO: Add transaction creation form */}
 
-            {/* TODO: Add transaction creation form */}
+              {/* TODO: Add transactions list */}
 
-            {/* TODO: Add transactions list */}
+              <section class="ownership">
+                <div class="owner">
+                  <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span></h3>
+                </div>
+              </section>
 
-            <section class="ownership">
-              <div class="owner">
-                <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span></h3>
-              </div>
-            </section>
+              <section class="portfolio-info">
+                <h3>Portfolio information</h3>
+                <div>
+                  {portfolio().description || 'No description set'}
+                </div>
+                <div>
+                  {portfolio().url || 'No url set'}
+                </div>
+              </section>
 
-            <section class="portfolio-info">
-              <h3>Portfolio information</h3>
-              <div>
-                {portfolio()?.description || 'No description set'}
-              </div>
-              <div>
-                {portfolio()?.url || 'No url set'}
-              </div>
-            </section>
+            </StyledPortfolioDetailContent>
+          </>}
 
-          </StyledPortfolioDetailContent>
 
         </Show>
       </Show>

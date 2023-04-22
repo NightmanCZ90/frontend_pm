@@ -4,11 +4,11 @@ import { tokens, useThemeContext } from "../../styles/theme";
 import { StyledHeader } from "./Header.styles";
 
 interface IHeaderProps {
-  title: string | (() => string);
+  title: string;
   subtitle: string;
 }
 
-const Header: Component<IHeaderProps> = ({ title, subtitle }) => {
+const Header: Component<IHeaderProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
@@ -19,13 +19,13 @@ const Header: Component<IHeaderProps> = ({ title, subtitle }) => {
         color={colors().grey[100]}
         fontWeight="bold"
       >
-        {title}
+        {props.title}
       </Typography>
       <Typography
         variant="h5"
         color={colors().greenAccent[400]}
       >
-        {subtitle}
+        {props.subtitle}
       </Typography>
     </StyledHeader>
   )

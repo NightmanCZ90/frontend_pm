@@ -1,4 +1,4 @@
-import { createForm, email, Field, Form, getValue, minLength, required, SubmitEvent, value } from "@modular-forms/solid";
+import { createForm, email, getValue, minLength, required, SubmitEvent, value } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField, Typography } from "@suid/material";
 import { Component, createResource, createSignal, Setter } from "solid-js";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -21,7 +21,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const registerForm = createForm<RegisterForm>({ validateOn: "touched" });
+  const [registerForm, Form] = createForm<RegisterForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<RegisterForm | null>(null);
 
   const [registration] = createResource(formData, signUp);
@@ -39,19 +39,19 @@ const SignUp: Component<ISignUpProps> = (props) => {
       <StyledSignUpForm colors={colors()}>
         <Typography variant="h1" fontWeight={500}>port/fall.io</Typography>
         <br />
-        <Form of={registerForm} onSubmit={handleSubmit}>
+        <Form.Form onSubmit={handleSubmit}>
 
-          <Field
-            of={registerForm}
+          <Form.Field
             name="email"
+            type="string"
             validate={[
               required('Please enter your email.'),
               email('Please enter a valid email address.')
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 type="email"
                 label="E-mail"
                 color="secondary"
@@ -61,19 +61,19 @@ const SignUp: Component<ISignUpProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
+          </Form.Field>
 
-          <Field
-            of={registerForm}
+          <Form.Field
             name="password"
+            type="string"
             validate={[
               required('Please enter your password.'),
               minLength(8, 'Your password must have 8 characters or more.')
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 type="password"
                 label="Password"
                 color="secondary"
@@ -83,18 +83,18 @@ const SignUp: Component<ISignUpProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
-          <Field
-            of={registerForm}
+          </Form.Field>
+          <Form.Field
             name="confirmPassword"
+            type="string"
             validate={[
               required('Please enter your password.'),
               value(getValue(registerForm, 'password') || '', 'Passwords must match.')
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 type="password"
                 label="Confirm password"
                 color="secondary"
@@ -104,7 +104,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
+          </Form.Field>
 
           <ErrorMessage resource={registration} />
 
@@ -121,7 +121,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
             </Button>
           </div>
 
-        </Form>
+        </Form.Form>
       </StyledSignUpForm>
 
     </StyledSignUp>

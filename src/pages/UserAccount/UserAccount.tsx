@@ -1,4 +1,4 @@
-import { createForm, Field, Form, required, setValue, SubmitEvent } from "@modular-forms/solid";
+import { createForm, required, setValues, SubmitEvent } from "@modular-forms/solid";
 import { Button, CircularProgress, TextField } from "@suid/material";
 import { Component, createEffect, createResource, createSignal } from "solid-js";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -23,14 +23,16 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
 
   const { auth } = authStore;
 
-  const userAccountForm = createForm<UserAccountForm>({ validateOn: "touched" });
+  const [userAccountForm, Form] = createForm<UserAccountForm>({ validateOn: "touched" });
   const [formData, setFormData] = createSignal<UserAccountForm | null>(null);
 
   const [updatedCurrentUser] = createResource(formData, updateCurrentUser);
 
   createEffect(() => {
-    setValue(userAccountForm, 'firstName', auth.currentUser?.firstName || '');
-    setValue(userAccountForm, 'lastName', auth.currentUser?.lastName || '');
+    setValues(userAccountForm, {
+      firstName: auth.currentUser?.firstName || '',
+      lastName: auth.currentUser?.lastName || '',
+    });
   });
 
   const userTitle = () => auth.currentUser?.email || 'User Account';
@@ -45,21 +47,21 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
   return (
     <StyledUserAccount class="UserAccount">
       <div class="header-content">
-        <Header title={userTitle} subtitle="Manage your account here" />
+        <Header title={userTitle()} subtitle="Manage your account here" />
       </div>
 
       <StyledUserAccountContent class="UserAccountContent" colors={colors()}>
-        <Form of={userAccountForm} onSubmit={handleSubmit}>
-          <Field
-            of={userAccountForm}
+        <Form.Form onSubmit={handleSubmit}>
+          <Form.Field
             name="firstName"
+            type="string"
             validate={[
               required('Please enter you first name.'),
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 label="First name"
                 color="secondary"
                 value={field.value || ''}
@@ -67,18 +69,18 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
                 helperText={field.error}
               />
             }
-          </Field>
+          </Form.Field>
 
-          <Field
-            of={userAccountForm}
+          <Form.Field
             name="lastName"
+            type="string"
             validate={[
               required('Please enter you last name.'),
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 label="Last name"
                 color="secondary"
                 value={field.value || ''}
@@ -86,7 +88,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
                 helperText={field.error}
               />
             }
-          </Field>
+          </Form.Field>
           <div class="signup-form-buttons">
             <Button
               color="secondary"
@@ -100,7 +102,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
 
           <ErrorMessage resource={updatedCurrentUser} />
 
-        </Form>
+        </Form.Form>
       </StyledUserAccountContent>
     </StyledUserAccount>
   )

@@ -1,4 +1,4 @@
-import { createForm, email, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, maxLength, required, reset, setValues, SubmitEvent } from "@modular-forms/solid";
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
@@ -62,7 +62,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
   const [portfolio, { mutate }] = createResource(params.id, getPortfolio);
 
-  const investorEmailForm = createForm<InvestorEmailForm>({ validateOn: "touched" });
+  const [investorEmailForm, InvestorEmail] = createForm<InvestorEmailForm>({ validateOn: "touched" });
 
   const [linkInvestorEmail, setLinkInvestorEmail] = createSignal<InvestorEmailForm | null>(null);
   const [linkedPortfolio, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.id, payload));
@@ -70,17 +70,19 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
   const [unlinkedPortfolio, { mutate: mutateUnlink }] = createResource(unlinkPortfolioId, unlinkPortfolio);
 
-  const editPortfolioForm = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
+  const [editPortfolioForm, EditPortfolio] = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
 
   const [formData, setFormData] = createSignal<EditPortfolioForm | null>(null);
   const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.id, formData));
 
   createEffect(() => {
     if ((!portfolio.error && portfolio())) {
-      setValue(editPortfolioForm, 'name', portfolio()?.name || '');
-      setValue(editPortfolioForm, 'description', portfolio()?.description || '');
-      setValue(editPortfolioForm, 'url', portfolio()?.url || '');
-      setValue(editPortfolioForm, 'color', portfolio()?.color || '');
+      setValues(editPortfolioForm, {
+        name: portfolio()?.name || '',
+        description: portfolio()?.description || '',
+        url: portfolio()?.url || '',
+        color: portfolio()?.color || '',
+      })
     }
   });
 
@@ -118,7 +120,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
     setFormData(values);
   }
 
-  const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || updatedPortfolio.loading;
+  const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading;
 
   const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
 
@@ -142,197 +144,203 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
         <Show when={portfolio.state === 'ready' && portfolio()} fallback={'loading'}>
 
-          <div class="header-content">
-            <A href={`/portfolios/${params.id}`} class="link-back">
-              <IconButton>
-                <ChevronLeft />
-              </IconButton>
-            </A>
-            <Header title={`Edit portfolio ${portfolio()?.name || ''}`} subtitle="You can create portfolio here" />
-          </div>
+          {(portfolio) => <>
+            <div class="header-content">
+              <A href={`/portfolios/${params.id}`} class="link-back">
+                <IconButton>
+                  <ChevronLeft />
+                </IconButton>
+              </A>
+              <Header title={`Edit portfolio ${portfolio().name || ''}`} subtitle="You can create portfolio here" />
+            </div>
 
-          <div class="owner-selection">
-            <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span>{portfolio.loading || linkedPortfolio.loading ? <CircularProgress size={16} /> : null}</h3>
+            <div class="owner-selection">
+              <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span><Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}><CircularProgress size={16} /></Show></h3>
 
-            <Switch>
+              <Switch>
 
-              <Match when={ownership() === PortfolioOwnership.Personal}>
-                <h4>Link to investor</h4>
-                <Form of={investorEmailForm} onSubmit={handleLink}>
-                  <Field
-                    of={investorEmailForm}
-                    name="email"
-                    validate={[
-                      required("Please enter investor's email."),
-                      email('Please enter a valid email address.'),
-                    ]}
-                  >
-                    {(field) =>
-                      <TextField
-                        inputProps={{ ...remapFieldProps(field.props) }}
-                        color="secondary"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        label="Investor email"
-                        value={field.value || ''}
-                        disabled={portfolio.loading || linkedPortfolio.loading}
-                        error={Boolean(field.error)}
-                        helperText={field.error}
+                <Match when={ownership() === PortfolioOwnership.Personal}>
+                  <h4>Link to investor</h4>
+                  <InvestorEmail.Form onSubmit={handleLink}>
+                    <InvestorEmail.Field
+                      name="email"
+                      type="string"
+                      validate={[
+                        required("Please enter investor's email."),
+                        email('Please enter a valid email address.'),
+                      ]}
+                    >
+                      {(field, props) =>
+                        <TextField
+                          inputProps={{ ...remapFieldProps(props) }}
+                          color="secondary"
+                          variant="outlined"
+                          fullWidth
+                          required
+                          label="Investor email"
+                          value={field.value || ''}
+                          disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                          error={Boolean(field.error)}
+                          helperText={field.error}
 
-                      />
-                    }
-                  </Field>
+                        />
+                      }
+                    </InvestorEmail.Field>
 
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading || investorEmailForm.invalid}
+                    >
+                      <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Link investor'}><CircularProgress size={16} /></Show>
+                    </Button>
+                  </InvestorEmail.Form>
+                </Match>
+
+                <Match when={ownership() === PortfolioOwnership.Managing}>
+                  <h4>Unlink investor from portfolio</h4>
                   <Button
-                    type="submit"
                     color="secondary"
                     variant="contained"
-                    disabled={portfolio.loading || linkedPortfolio.loading || investorEmailForm.invalid}
+                    onClick={() => setUnlinkPortfolioId(params.id)}
+                    disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
                   >
-                    {(portfolio.loading || linkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Link investor'}
+                    <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Unlink investor'}><CircularProgress size={16} /></Show>
                   </Button>
-                </Form>
-              </Match>
+                </Match>
 
-              <Match when={ownership() === PortfolioOwnership.Managing}>
-                <h4>Unlink investor from portfolio</h4>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setUnlinkPortfolioId(params.id)}
-                  disabled={portfolio.loading || unlinkedPortfolio.loading}
-                >
-                  {(portfolio.loading || unlinkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Unlink investor'}
-                </Button>
-              </Match>
+                <Match when={ownership() === PortfolioOwnership.Managed}>
+                  <h4>Unlink from portfolio</h4>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => setUnlinkPortfolioId(params.id)}
+                    disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                  >
+                    <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Unlink from portfolio'}><CircularProgress size={16} /></Show>
+                  </Button>
+                </Match>
 
-              <Match when={ownership() === PortfolioOwnership.Managed}>
-                <h4>Unlink from portfolio</h4>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => setUnlinkPortfolioId(params.id)}
-                  disabled={portfolio.loading || unlinkedPortfolio.loading}
-                >
-                  {(portfolio.loading || unlinkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Unlink from portfolio'}
-                </Button>
-              </Match>
+                {/* TODO: Implement unconfirmed once implemented */}
 
-              {/* TODO: Implement unconfirmed once implemented */}
+              </Switch>
 
-            </Switch>
+              <ErrorMessage resource={linkedPortfolio} />
+              <ErrorMessage resource={unlinkedPortfolio} />
 
-            <ErrorMessage resource={linkedPortfolio} />
-            <ErrorMessage resource={unlinkedPortfolio} />
+              <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
+              <SuccessMessage resource={unlinkedPortfolio} successMessage="Portfolio has been successfully unlinked." />
+            </div>
 
-            <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
-            <SuccessMessage resource={unlinkedPortfolio} successMessage="Portfolio has been successfully unlinked." />
-          </div>
+            <div class="portfolio-edit-form">
+              <EditPortfolio.Form onSubmit={handleSubmit}>
+                <h3>Portfolio information</h3>
 
-          <div class="portfolio-edit-form">
-            <Form of={editPortfolioForm} onSubmit={handleSubmit}>
-              <h3>Portfolio information</h3>
-
-              {/* Invisible field only for the form to have this value */}
-              {/* <Field of={editPortfolioForm} name="investorId">
+                {/* Invisible field only for the form to have this value */}
+                {/* <Field of={editPortfolioForm} name="investorId">
             {(field) => null}
           </Field> */}
 
-              <Field
-                of={editPortfolioForm}
-                name="name"
-                validate={[
-                  required('Please enter portfolio name.'),
-                  maxLength(20, 'Max length is 20 characters.'),
-                ]}
-              >
-                {(field) =>
-                  <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
-                    fullWidth
-                    label="Portfolio name"
-                    color="secondary"
-                    variant="outlined"
-                    required
-                    value={field.value}
-                    error={Boolean(field.error)}
-                    helperText={field.error}
-                  />}
-              </Field>
-              <Field
-                of={editPortfolioForm}
-                name="description"
-                validate={[
-                  maxLength(240, 'Max length is 240 characters.'),
-                ]}
-              >
-                {(field) =>
-                  <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
-                    fullWidth
-                    label="Portfolio description"
-                    color="secondary"
-                    variant="outlined"
-                    required
-                    value={field.value}
-                    error={Boolean(field.error)}
-                    helperText={field.error}
-                  />}
-              </Field>
-              <Field
-                of={editPortfolioForm}
-                name="url"
-              >
-                {(field) =>
-                  <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
-                    fullWidth
-                    label="Portfolio url"
-                    color="secondary"
-                    variant="outlined"
-                    required
-                    value={field.value}
-                    error={Boolean(field.error)}
-                    helperText={field.error}
-                  />}
-              </Field>
+                <EditPortfolio.Field
+                  name="name"
+                  type="string"
+                  validate={[
+                    required('Please enter portfolio name.'),
+                    maxLength(20, 'Max length is 20 characters.'),
+                  ]}
+                >
+                  {(field, props) =>
+                    <TextField
+                      inputProps={{ ...remapFieldProps(props) }}
+                      fullWidth
+                      label="Portfolio name"
+                      color="secondary"
+                      variant="outlined"
+                      required
+                      value={field.value}
+                      error={Boolean(field.error)}
+                      helperText={field.error}
+                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                    />}
+                </EditPortfolio.Field>
+                <EditPortfolio.Field
+                  name="description"
+                  type="string"
+                  validate={[
+                    maxLength(240, 'Max length is 240 characters.'),
+                  ]}
+                >
+                  {(field, props) =>
+                    <TextField
+                      inputProps={{ ...remapFieldProps(props) }}
+                      fullWidth
+                      label="Portfolio description"
+                      color="secondary"
+                      variant="outlined"
+                      required
+                      value={field.value}
+                      error={Boolean(field.error)}
+                      helperText={field.error}
+                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                    />}
+                </EditPortfolio.Field>
+                <EditPortfolio.Field
+                  name="url"
+                  type="string"
+                >
+                  {(field, props) =>
+                    <TextField
+                      inputProps={{ ...remapFieldProps(props) }}
+                      fullWidth
+                      label="Portfolio url"
+                      color="secondary"
+                      variant="outlined"
+                      required
+                      value={field.value}
+                      error={Boolean(field.error)}
+                      helperText={field.error}
+                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                    />}
+                </EditPortfolio.Field>
 
-              {/* TODO: Add color pickers */}
-              <Field
-                of={editPortfolioForm}
-                name="color"
-              >
-                {(field) =>
-                  <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
-                    fullWidth
-                    label="Portfolio color"
-                    color="secondary"
-                    variant="outlined"
-                    required
-                    value={field.value}
-                    error={Boolean(field.error)}
-                    helperText={field.error}
-                  />}
-              </Field>
+                {/* TODO: Add color pickers */}
+                <EditPortfolio.Field
+                  name="color"
+                  type="string"
+                >
+                  {(field, props) =>
+                    <TextField
+                      inputProps={{ ...remapFieldProps(props) }}
+                      fullWidth
+                      label="Portfolio color"
+                      color="secondary"
+                      variant="outlined"
+                      required
+                      value={field.value}
+                      error={Boolean(field.error)}
+                      helperText={field.error}
+                      disabled={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading}
+                    />}
+                </EditPortfolio.Field>
 
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                fullWidth
-                disabled={creationButtonDisabled()}
-              >
-                {(portfolio.loading || updatedPortfolio.loading) ? (<CircularProgress size={24} />) : "Update portfolio"}
-              </Button>
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  fullWidth
+                  disabled={creationButtonDisabled()}
+                >
+                  <Show when={updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading} fallback={'Update portfolio'}><CircularProgress size={16} /></Show>
+                </Button>
 
-              <ErrorMessage resource={updatedPortfolio} />
+                <ErrorMessage resource={updatedPortfolio} />
 
-              <SuccessMessage resource={updatedPortfolio} successMessage="Portfolio has been successfully created" />
+                <SuccessMessage resource={updatedPortfolio} successMessage="Portfolio has been successfully created" />
 
-            </Form>
-          </div>
+              </EditPortfolio.Form>
+            </div>
+          </>}
 
         </Show>
       </Show>

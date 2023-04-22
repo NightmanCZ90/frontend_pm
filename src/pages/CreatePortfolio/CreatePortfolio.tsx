@@ -1,4 +1,4 @@
-import { createForm, email, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
 import { A } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, FormControlLabel, IconButton, Switch, TextField } from "@suid/material";
@@ -51,12 +51,12 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
   const [emailChanged, setEmailChanged] = createSignal(false);
 
   // Investor email check
-  const investorCheckForm = createForm<InvestorCheckForm>({ validateOn: "touched" });
+  const [investorCheckForm, InvestorCheck] = createForm<InvestorCheckForm>({ validateOn: "touched" });
   const [investorEmail, setInvestorEmail] = createSignal<InvestorCheckForm | null>(null);
   const [investorId] = createResource(investorEmail, checkInvestor);
 
   // Portfolio creation
-  const createPortfolioForm = createForm<CreatePortfolioForm>({ validateOn: "touched", initialValues: initialCreatePortfolioForm });
+  const [createPortfolioForm, CreatePortfolio] = createForm<CreatePortfolioForm>({ validateOn: "touched", initialValues: initialCreatePortfolioForm });
   const [formData, setFormData] = createSignal<CreatePortfolioForm | null>(null);
   const [portfolio] = createResource(formData, createPortfolio);
 
@@ -120,18 +120,18 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
 
         <Show when={isManaging()}>
           <div class="investor-selection">
-            <Form of={investorCheckForm} onSubmit={handleCheckInvestor}>
-              <Field
-                of={investorCheckForm}
+            <InvestorCheck.Form onSubmit={handleCheckInvestor}>
+              <InvestorCheck.Field
+                type="string"
                 name="investorEmail"
                 validate={[
                   required("Please enter investor's email."),
                   email('Please enter a valid email address.'),
                 ]}
               >
-                {(field) =>
+                {(field, props) =>
                   <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
+                    inputProps={{ ...remapFieldProps(props) }}
                     fullWidth
                     type="email"
                     label="Managed investor email"
@@ -144,7 +144,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                     error={Boolean(field.error) || (investorId.error && !emailChanged())}
                     helperText={field.error}
                   />}
-              </Field>
+              </InvestorCheck.Field>
 
               <Button
                 type="submit"
@@ -161,32 +161,32 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
 
               <SuccessMessage resource={!emailChanged() ? investorId : null} successMessage="User is checked. You can continue with portfolio creation." />
 
-            </Form>
+            </InvestorCheck.Form>
 
           </div>
         </Show>
       </div>
 
       <div class="portfolio-creation-form">
-        <Form of={createPortfolioForm} onSubmit={handleSubmit}>
+        <CreatePortfolio.Form onSubmit={handleSubmit}>
           <h3>Portfolio information</h3>
 
           {/* Invisible field only for the form to have this value */}
-          <Field of={createPortfolioForm} name="investorId">
+          <CreatePortfolio.Field type="number" name="investorId">
             {(field) => null}
-          </Field>
+          </CreatePortfolio.Field>
 
-          <Field
-            of={createPortfolioForm}
+          <CreatePortfolio.Field
             name="name"
+            type="string"
             validate={[
               required('Please enter portfolio name.'),
               maxLength(20, 'Max length is 20 characters.'),
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 fullWidth
                 label="Portfolio name"
                 color="secondary"
@@ -196,17 +196,18 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
-          <Field
-            of={createPortfolioForm}
+          </CreatePortfolio.Field>
+
+          <CreatePortfolio.Field
             name="description"
+            type="string"
             validate={[
               maxLength(240, 'Max length is 240 characters.'),
             ]}
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 fullWidth
                 label="Portfolio description"
                 color="secondary"
@@ -216,14 +217,15 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
-          <Field
-            of={createPortfolioForm}
+          </CreatePortfolio.Field>
+
+          <CreatePortfolio.Field
             name="url"
+            type="string"
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 fullWidth
                 label="Portfolio url"
                 color="secondary"
@@ -233,16 +235,16 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
+          </CreatePortfolio.Field>
 
           {/* TODO: Add color pickers */}
-          <Field
-            of={createPortfolioForm}
+          <CreatePortfolio.Field
             name="color"
+            type="string"
           >
-            {(field) =>
+            {(field, props) =>
               <TextField
-                inputProps={{ ...remapFieldProps(field.props) }}
+                inputProps={{ ...remapFieldProps(props) }}
                 fullWidth
                 label="Portfolio color"
                 color="secondary"
@@ -252,7 +254,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 error={Boolean(field.error)}
                 helperText={field.error}
               />}
-          </Field>
+          </CreatePortfolio.Field>
 
           <Button
             type="submit"
@@ -268,7 +270,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
 
           <SuccessMessage resource={portfolio} successMessage="Portfolio has been successfully created" />
 
-        </Form>
+        </CreatePortfolio.Form>
       </div>
 
     </StyledCreatePortfolio>
