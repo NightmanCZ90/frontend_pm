@@ -1,4 +1,4 @@
-import { createForm, email, Field, Form, maxLength, required, reset, setValue, SubmitEvent } from "@modular-forms/solid";
+import { createForm, email, maxLength, required, reset, setValues, SubmitEvent } from "@modular-forms/solid";
 import { A, useNavigate, useParams } from "@solidjs/router";
 import { ChevronLeft } from "@suid/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@suid/material";
@@ -62,7 +62,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
   const [portfolio, { mutate }] = createResource(params.id, getPortfolio);
 
-  const investorEmailForm = createForm<InvestorEmailForm>({ validateOn: "touched" });
+  const [investorEmailForm, InvestorEmail] = createForm<InvestorEmailForm>({ validateOn: "touched" });
 
   const [linkInvestorEmail, setLinkInvestorEmail] = createSignal<InvestorEmailForm | null>(null);
   const [linkedPortfolio, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.id, payload));
@@ -70,17 +70,19 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
   const [unlinkedPortfolio, { mutate: mutateUnlink }] = createResource(unlinkPortfolioId, unlinkPortfolio);
 
-  const editPortfolioForm = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
+  const [editPortfolioForm, EditPortfolio] = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
 
   const [formData, setFormData] = createSignal<EditPortfolioForm | null>(null);
   const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.id, formData));
 
   createEffect(() => {
     if ((!portfolio.error && portfolio())) {
-      setValue(editPortfolioForm, 'name', portfolio()?.name || '');
-      setValue(editPortfolioForm, 'description', portfolio()?.description || '');
-      setValue(editPortfolioForm, 'url', portfolio()?.url || '');
-      setValue(editPortfolioForm, 'color', portfolio()?.color || '');
+      setValues(editPortfolioForm, {
+        name: portfolio()?.name || '',
+        description: portfolio()?.description || '',
+        url: portfolio()?.url || '',
+        color: portfolio()?.color || '',
+      })
     }
   });
 
@@ -158,18 +160,18 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
               <Match when={ownership() === PortfolioOwnership.Personal}>
                 <h4>Link to investor</h4>
-                <Form of={investorEmailForm} onSubmit={handleLink}>
-                  <Field
-                    of={investorEmailForm}
+                <InvestorEmail.Form onSubmit={handleLink}>
+                  <InvestorEmail.Field
                     name="email"
+                    type="string"
                     validate={[
                       required("Please enter investor's email."),
                       email('Please enter a valid email address.'),
                     ]}
                   >
-                    {(field) =>
+                    {(field, props) =>
                       <TextField
-                        inputProps={{ ...remapFieldProps(field.props) }}
+                        inputProps={{ ...remapFieldProps(props) }}
                         color="secondary"
                         variant="outlined"
                         fullWidth
@@ -182,7 +184,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
                       />
                     }
-                  </Field>
+                  </InvestorEmail.Field>
 
                   <Button
                     type="submit"
@@ -192,7 +194,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   >
                     {(portfolio.loading || linkedPortfolio.loading) ? (<CircularProgress size={24} />) : 'Link investor'}
                   </Button>
-                </Form>
+                </InvestorEmail.Form>
               </Match>
 
               <Match when={ownership() === PortfolioOwnership.Managing}>
@@ -231,7 +233,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
           </div>
 
           <div class="portfolio-edit-form">
-            <Form of={editPortfolioForm} onSubmit={handleSubmit}>
+            <EditPortfolio.Form onSubmit={handleSubmit}>
               <h3>Portfolio information</h3>
 
               {/* Invisible field only for the form to have this value */}
@@ -239,17 +241,17 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
             {(field) => null}
           </Field> */}
 
-              <Field
-                of={editPortfolioForm}
+              <EditPortfolio.Field
                 name="name"
+                type="string"
                 validate={[
                   required('Please enter portfolio name.'),
                   maxLength(20, 'Max length is 20 characters.'),
                 ]}
               >
-                {(field) =>
+                {(field, props) =>
                   <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
+                    inputProps={{ ...remapFieldProps(props) }}
                     fullWidth
                     label="Portfolio name"
                     color="secondary"
@@ -259,17 +261,17 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     error={Boolean(field.error)}
                     helperText={field.error}
                   />}
-              </Field>
-              <Field
-                of={editPortfolioForm}
+              </EditPortfolio.Field>
+              <EditPortfolio.Field
                 name="description"
+                type="string"
                 validate={[
                   maxLength(240, 'Max length is 240 characters.'),
                 ]}
               >
-                {(field) =>
+                {(field, props) =>
                   <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
+                    inputProps={{ ...remapFieldProps(props) }}
                     fullWidth
                     label="Portfolio description"
                     color="secondary"
@@ -279,14 +281,14 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     error={Boolean(field.error)}
                     helperText={field.error}
                   />}
-              </Field>
-              <Field
-                of={editPortfolioForm}
+              </EditPortfolio.Field>
+              <EditPortfolio.Field
                 name="url"
+                type="string"
               >
-                {(field) =>
+                {(field, props) =>
                   <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
+                    inputProps={{ ...remapFieldProps(props) }}
                     fullWidth
                     label="Portfolio url"
                     color="secondary"
@@ -296,16 +298,16 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     error={Boolean(field.error)}
                     helperText={field.error}
                   />}
-              </Field>
+              </EditPortfolio.Field>
 
               {/* TODO: Add color pickers */}
-              <Field
-                of={editPortfolioForm}
+              <EditPortfolio.Field
                 name="color"
+                type="string"
               >
-                {(field) =>
+                {(field, props) =>
                   <TextField
-                    inputProps={{ ...remapFieldProps(field.props) }}
+                    inputProps={{ ...remapFieldProps(props) }}
                     fullWidth
                     label="Portfolio color"
                     color="secondary"
@@ -315,7 +317,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     error={Boolean(field.error)}
                     helperText={field.error}
                   />}
-              </Field>
+              </EditPortfolio.Field>
 
               <Button
                 type="submit"
@@ -331,7 +333,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
               <SuccessMessage resource={updatedPortfolio} successMessage="Portfolio has been successfully created" />
 
-            </Form>
+            </EditPortfolio.Form>
           </div>
 
         </Show>

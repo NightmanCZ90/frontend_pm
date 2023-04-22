@@ -33,7 +33,7 @@ const App: Component = () => {
   authStore.setAuth('tokens', tokens ? JSON.parse(tokens) : null);
 
   // Show either signin page or signup page
-  const renderFallback = () => showLogin()
+  const renderFallback = showLogin()
     ? <SignIn setShowLogin={setShowLogin} />
     : <SignUp setShowLogin={setShowLogin} />
 

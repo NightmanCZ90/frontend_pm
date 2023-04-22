@@ -16,12 +16,12 @@ const GuardedRoute: Component<IGuardedRouteProps & RouteProps<string>> = ({ comp
   // TODO: Refactor to Admin guard or customizable guard
 
   // Show either signin page or signup page
-  const renderFallback = () => showLogin()
+  const renderFallback = showLogin()
     ? <SignIn setShowLogin={setShowLogin} />
     : <SignUp setShowLogin={setShowLogin} />
 
   // Render Guarded component or fallback
-  const renderGuardedComponent = (props: any) => () => auth.tokens?.accessToken
+  const renderGuardedComponent = (props: any) => auth.tokens?.accessToken
     ? <GuardedComponent {...props} />
     : renderFallback
 
