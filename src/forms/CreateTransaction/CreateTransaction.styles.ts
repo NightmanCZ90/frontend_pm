@@ -1,7 +1,9 @@
 import { styled } from "solid-styled-components";
+import { Colors } from "../../styles/theme";
 
 interface IStyledCreateTransactionProps {
   readonly edit: number;
+  colors: Colors;
 }
 
 export const StyledCreateTransaction = styled('div') <IStyledCreateTransactionProps>`
@@ -30,5 +32,9 @@ export const StyledCreateTransaction = styled('div') <IStyledCreateTransactionPr
     & > span {
       color: var(--text-error);
     }
+  }
+
+  div.MuiInputBase-root {
+    background-color: ${props => props.colors?.primary[900]};
   }
 `;

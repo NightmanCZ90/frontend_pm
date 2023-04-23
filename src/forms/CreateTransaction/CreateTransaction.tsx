@@ -8,6 +8,7 @@ import { remapFieldProps } from "../../utils/helpers";
 import RestApiClient from "../../services/RestApiClient";
 import ErrorMessage from "../../components/ErrorMessage";
 import SuccessMessage from "../../components/SuccessMessage";
+import { tokens, useThemeContext } from "../../styles/theme";
 
 const createTransaction = (portfolioId: number, payload: TransactionForm,) => {
   const parsed = {
@@ -64,6 +65,9 @@ interface ICreateTransactionProps {
 
 
 const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
+  const [mode] = useThemeContext();
+  const colors = () => tokens(mode());
+
   const [transactionForm, Form] = createForm<TransactionForm>({ initialValues: initialFormData, validateOn: "touched" });
   const [formData, setFormData] = createSignal<TransactionForm | null>(null);
 
@@ -80,7 +84,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
 
   return (
     // <StyledCreateTransaction edit={isEdit ? 1 : 0}>
-    <StyledCreateTransaction edit={1}>
+    <StyledCreateTransaction class="CreateTransaction" colors={colors()} edit={1}>
 
       <Form.Form onSubmit={handleSubmit}>
         <div class="transaction-type">
