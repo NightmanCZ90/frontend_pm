@@ -9,6 +9,7 @@ import { PortfolioOwnership } from "../../types";
 import { generatePortfolioOwnership, generateUserName } from "../../utils/helpers";
 import { StyledPortfolioDetail, StyledPortfolioDetailContent } from "./PortfolioDetail.styles";
 import { authStore } from "../../stores/AuthStore";
+import CreateTransaction from "../../forms/CreateTransaction";
 
 const getPortfolio = async (id: string) => {
   return RestApiClient.getPortfolio(id);
@@ -91,6 +92,12 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
                 <div>
                   {portfolio().url || 'No url set'}
                 </div>
+              </section>
+
+              <section class="transaction-form">
+                <CreateTransaction
+                  portfolioId={portfolio().id}
+                />
               </section>
 
             </StyledPortfolioDetailContent>
