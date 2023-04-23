@@ -1,4 +1,4 @@
-import { Portfolio, PortfolioTypes, Role, Tokens, User } from '../types';
+import { ExecutionType, Portfolio, PortfolioTypes, Role, Tokens, Transaction, TransactionType, User } from '../types';
 import ApiClient from './ApiClient';
 import { BASE_URL } from './axios';
 
@@ -178,29 +178,29 @@ class RestApiClient extends ApiClient {
   //   })
   // }
 
-  // /**
-  //  * Transactions
-  //  */
+  /**
+   * Transactions
+   */
 
-  //  async createTransaction(body: {
-  //   stockName: string;
-  //   stockSector: string | null;
-  //   transactionTime: string;
-  //   transactionType: TransactionType;
-  //   numShares: number;
-  //   price: number;
-  //   currency: string;
-  //   execution: ExecutionType;
-  //   commissions: number | null;
-  //   notes: string | null;
-  //   portfolioId: number;
-  // }) {
-  //   return this.axiosRequest<Transaction>({
-  //     url: '/transactions',
-  //     method: 'POST',
-  //     body,
-  //   })
-  // }
+  async createTransaction(body: {
+    stockName: string;
+    stockSector: string | null;
+    transactionTime: string;
+    transactionType: TransactionType;
+    numShares: number;
+    price: number;
+    currency: string;
+    execution: ExecutionType;
+    commissions: number | null;
+    notes: string | null;
+    portfolioId: number;
+  }) {
+    return this.axiosRequest<Transaction>({
+      url: '/transactions',
+      method: 'POST',
+      body,
+    })
+  }
 
   //  async updateTransaction(transactionId: number, body: {
   //   stockName: string;
