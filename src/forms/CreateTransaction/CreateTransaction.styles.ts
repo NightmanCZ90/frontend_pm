@@ -9,12 +9,12 @@ export const StyledCreateTransaction = styled('div') <IStyledCreateTransactionPr
   form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 16px;
 
     .required,
     .defaulted {
       display: flex;
-      gap: 1rem;
+      gap: 16px;
     }
 
     .buttons {
@@ -23,7 +23,7 @@ export const StyledCreateTransaction = styled('div') <IStyledCreateTransactionPr
 
       .buttons-delete {
         display: flex;
-        gap: 1rem;
+        gap: 16px;
       }
     }
     

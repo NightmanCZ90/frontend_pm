@@ -1,21 +1,25 @@
 import { Component, For, Show, createResource, createSignal } from "solid-js";
 import { createForm, custom, getValue, maxLength, minRange, required, setValue } from "@modular-forms/solid";
-import { FormControl, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@suid/material";
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@suid/material";
 
 import { Currency, ExecutionType, Transaction, TransactionType } from "../../types";
 import { StyledCreateTransaction } from "./CreateTransaction.styles";
 import { remapFieldProps } from "../../utils/helpers";
+import RestApiClient from "../../services/RestApiClient";
+import ErrorMessage from "../../components/ErrorMessage";
+import SuccessMessage from "../../components/SuccessMessage";
 
-const createTransaction = (data: TransactionForm) => {
+const createTransaction = (portfolioId: number, payload: TransactionForm,) => {
   const parsed = {
-    ...data,
-    price: parseFloat(data.price.replace(',', '.')),
-    numShares: parseFloat(data?.numShares.replace(',', '.')),
-    commissions: data.commissions ? parseFloat(data?.commissions.replace(',', '.')) : null,
+    ...payload,
+    price: parseFloat(payload.price.replace(',', '.')),
+    numShares: parseFloat(payload?.numShares.replace(',', '.')),
+    commissions: payload.commissions ? parseFloat(payload?.commissions.replace(',', '.')) : null,
+    execution: payload.execution || ExecutionType.FIFO,
+    portfolioId,
   }
 
-  console.log(parsed);
-  return;
+  return RestApiClient.createTransaction(parsed);
 }
 
 const initialFormData = {
@@ -45,12 +49,12 @@ type TransactionForm = {
 }
 
 const executionTypes = {
-  fifo: 'FIFO', // First In First Out
-  lifo: 'LIFO', // Last In First Out
-  weightedAverage: 'Weighted average',
-  specificLots: 'Specific lots',
-  highCost: 'High cost',
-  lowCost: 'Low cost',
+  [ExecutionType.FIFO]: 'FIFO', // First In First Out
+  [ExecutionType.LIFO]: 'LIFO', // Last In First Out
+  [ExecutionType.WeightedAverage]: 'Weighted average',
+  [ExecutionType.SpecificLots]: 'Specific lots',
+  [ExecutionType.HighCost]: 'High cost',
+  [ExecutionType.LowCost]: 'Low cost',
 }
 
 interface ICreateTransactionProps {
@@ -60,18 +64,19 @@ interface ICreateTransactionProps {
 
 
 const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
-
   const [transactionForm, Form] = createForm<TransactionForm>({ initialValues: initialFormData, validateOn: "touched" });
   const [formData, setFormData] = createSignal<TransactionForm | null>(null);
 
-  const [] = createResource(formData, createTransaction);
+  const [transactionCreated] = createResource(formData, (formData) => createTransaction(props.portfolioId, formData));
 
   const handleSubmit = (values: TransactionForm, event: SubmitEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
     setFormData(values);
-  }
+  };
+
+  const transactionLoading = transactionCreated.loading;
 
   return (
     // <StyledCreateTransaction edit={isEdit ? 1 : 0}>
@@ -82,7 +87,6 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
 
           <Form.Field
             name="transactionType"
-          // type="string"
           >
             {(field, props) =>
               <ToggleButtonGroup
@@ -151,7 +155,6 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
 
           <Form.Field
             name="price"
-            // type="string"
             validate={[
               required('Price is required.'),
               custom(value => !Number.isNaN(+(value?.replace(',', '.') || '')), 'Value is not a valid number.'),
@@ -242,7 +245,6 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Sector"
                 color="secondary"
                 variant="outlined"
-                required
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -264,7 +266,6 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Commissions"
                 color="secondary"
                 variant="outlined"
-                required
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -291,14 +292,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                     onChange={(e) => setValue(transactionForm, 'execution', e.target.value)}
                   >
                     <For
-                      each={[
-                        { label: 'FIFO', value: ExecutionType.FIFO },
-                        { label: 'LIFO', value: ExecutionType.LIFO },
-                        { label: 'Weighted Average', value: ExecutionType.WeightedAverage },
-                        { label: 'Specific Lots', value: ExecutionType.SpecificLots },
-                        { label: 'High Cost', value: ExecutionType.HighCost },
-                        { label: 'Low Cost', value: ExecutionType.LowCost },
-                      ]}
+                      each={Object.entries(executionTypes).map(([key, value]) => ({ value: key, label: value }))}
                     >
                       {({ label, value }) => (
                         <MenuItem value={value}>{label}</MenuItem>
@@ -332,8 +326,20 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
         </Form.Field>
 
         <div class="buttons">
-          <button type="submit">Check</button>
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            disabled={transactionForm.invalid || transactionLoading}
+          >
+            Create Transaction
+          </Button>
+
+          <ErrorMessage resource={transactionCreated} />
+
+          <SuccessMessage resource={transactionCreated} successMessage="Transaction has been successfully deleted" />
         </div>
+
       </Form.Form>
 
     </StyledCreateTransaction>
