@@ -1,6 +1,6 @@
 import { FieldElement } from "@modular-forms/solid";
 import { JSX } from "solid-js";
-import { Portfolio, PortfolioOwnership, User } from "../types";
+import { Portfolio, PortfolioOwnership, Transaction, User } from "../types";
 
 export const remapFieldProps = (fieldProps: {
   name: string;
@@ -36,11 +36,15 @@ export const generatePortfolioOwnership = (data: { userId?: number | null, portf
   return PortfolioOwnership.Personal;
 }
 
-export const debounce = (fn: Function, ms = 300) => {
-  let timeoutId: ReturnType<typeof setTimeout>;
+// export const debounce = (fn: Function, ms = 300) => {
+//   let timeoutId: ReturnType<typeof setTimeout>;
 
-  return function (this: any, ...args: any[]) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), ms);
-  };
-};
+//   return function (this: any, ...args: any[]) {
+//     clearTimeout(timeoutId);
+//     timeoutId = setTimeout(() => fn.apply(this, args), ms);
+//   };
+// };
+
+export const sortTransactionsByDateAndId = (transactions: Transaction[]) => {
+  return transactions.sort((a, b) => new Date(b.transactionTime).getTime() - new Date(a.transactionTime).getTime() || b.id - a.id);
+}
