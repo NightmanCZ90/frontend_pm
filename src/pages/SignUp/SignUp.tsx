@@ -56,6 +56,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
                 label="E-mail"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -78,6 +79,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
                 label="Password"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -99,6 +101,7 @@ const SignUp: Component<ISignUpProps> = (props) => {
                 label="Confirm password"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -109,12 +112,13 @@ const SignUp: Component<ISignUpProps> = (props) => {
           <ErrorMessage resource={registration} />
 
           <div class="signup-form-buttons">
-            <Button color="secondary" onClick={() => props.setShowLogin(true)}>Already have an account?</Button>
+            <Button color="secondary" size="small" onClick={() => props.setShowLogin(true)}>Already have an account?</Button>
 
             <Button
               type="submit"
               color="secondary"
               variant="contained"
+              size="small"
               disabled={registration.loading || registerForm.invalid}
             >
               {registration.loading ? (<CircularProgress size={24} />) : "Sign up"}

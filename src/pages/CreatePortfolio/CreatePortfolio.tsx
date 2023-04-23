@@ -113,6 +113,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
               color="secondary"
               onChange={(e, value) => setIsManaging(value)}
               checked={isManaging()}
+              size="small"
             />
           }
           label={isManaging() ? 'Managing' : 'Personal'}
@@ -139,6 +140,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                     color={!investorId.error && investorId() && !emailChanged() ? "success" : "secondary"}
                     focused={!investorId.error && investorId() && !emailChanged() ? true : undefined}
                     variant="outlined"
+                    size="small"
                     required
                     value={field.value || ''}
                     error={Boolean(field.error) || (investorId.error && !emailChanged())}
@@ -150,6 +152,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 type="submit"
                 color="secondary"
                 variant="contained"
+                size="small"
                 disabled={investorId.loading || investorCheckForm.invalid}
               >
                 <Show when={investorId.loading} fallback="Check user">
@@ -191,6 +194,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 label="Portfolio name"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value}
                 error={Boolean(field.error)}
@@ -212,6 +216,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 label="Portfolio description"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value}
                 error={Boolean(field.error)}
@@ -230,6 +235,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 label="Portfolio url"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value}
                 error={Boolean(field.error)}
@@ -249,6 +255,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
                 label="Portfolio color"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value}
                 error={Boolean(field.error)}
@@ -260,6 +267,7 @@ const CreatePortfolio: Component<ICreatePortfolioProps> = (props) => {
             type="submit"
             color="secondary"
             variant="contained"
+            size="small"
             fullWidth
             disabled={creationButtonDisabled()}
           >

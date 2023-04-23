@@ -64,6 +64,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
                 inputProps={{ ...remapFieldProps(props) }}
                 label="First name"
                 color="secondary"
+                size="small"
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -83,6 +84,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
                 inputProps={{ ...remapFieldProps(props) }}
                 label="Last name"
                 color="secondary"
+                size="small"
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -94,6 +96,7 @@ const UserAccount: Component<IUserAccountProps> = (props) => {
               color="secondary"
               type="submit"
               variant="contained"
+              size="small"
               disabled={updatedCurrentUser.loading || userAccountForm.invalid}
             >
               {updatedCurrentUser.loading ? (<CircularProgress size={24} />) : "Save"}

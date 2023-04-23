@@ -55,6 +55,7 @@ const SignIn: Component<ISignInProps> = (props) => {
                 label="E-mail"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -77,6 +78,7 @@ const SignIn: Component<ISignInProps> = (props) => {
                 label="Password"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -90,6 +92,7 @@ const SignIn: Component<ISignInProps> = (props) => {
               fullWidth
               color="secondary"
               variant="contained"
+              size="small"
               disabled={authentication.loading || loginForm.invalid}
             >
               {authentication.loading ? (<CircularProgress size={24} />) : "Sign in"}
@@ -99,7 +102,7 @@ const SignIn: Component<ISignInProps> = (props) => {
           <ErrorMessage resource={authentication} />
 
           <div class="signin-form-buttons">
-            <Button color="secondary" onClick={() => props.setShowLogin(false)}>Create new account</Button>
+            <Button color="secondary" size="small" onClick={() => props.setShowLogin(false)}>Create new account</Button>
 
             {/* For testing purposes - faster signin */}
             <button type="button" onClick={() => setFormData({ email: 'test@test.com', password: 'heslo' })}>Sign in as Test</button>

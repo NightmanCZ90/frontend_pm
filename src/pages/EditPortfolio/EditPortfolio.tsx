@@ -191,6 +191,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                           inputProps={{ ...remapFieldProps(props) }}
                           color="secondary"
                           variant="outlined"
+                          size="small"
                           fullWidth
                           required
                           label="Investor email"
@@ -207,6 +208,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       type="submit"
                       color="secondary"
                       variant="contained"
+                      size="small"
                       disabled={formLoading() || investorEmailForm.invalid}
                     >
                       <Show when={formLoading()} fallback={'Link investor'}><CircularProgress size={16} /></Show>
@@ -219,6 +221,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   <Button
                     color="secondary"
                     variant="contained"
+                    size="small"
                     onClick={() => setUnlinkPortfolioId(params.portfolioId)}
                     disabled={formLoading()}
                   >
@@ -231,6 +234,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   <Button
                     color="secondary"
                     variant="contained"
+                    size="small"
                     onClick={() => setUnlinkPortfolioId(params.portfolioId)}
                     disabled={formLoading()}
                   >
@@ -273,6 +277,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       label="Portfolio name"
                       color="secondary"
                       variant="outlined"
+                      size="small"
                       required
                       value={field.value}
                       error={Boolean(field.error)}
@@ -294,6 +299,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       label="Portfolio description"
                       color="secondary"
                       variant="outlined"
+                      size="small"
                       required
                       value={field.value}
                       error={Boolean(field.error)}
@@ -312,6 +318,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       label="Portfolio url"
                       color="secondary"
                       variant="outlined"
+                      size="small"
                       required
                       value={field.value}
                       error={Boolean(field.error)}
@@ -332,6 +339,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       label="Portfolio color"
                       color="secondary"
                       variant="outlined"
+                      size="small"
                       required
                       value={field.value}
                       error={Boolean(field.error)}
@@ -344,6 +352,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   type="submit"
                   color="secondary"
                   variant="contained"
+                  size="small"
                   fullWidth
                   disabled={creationButtonDisabled()}
                 >
@@ -365,6 +374,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     <Button
                       color="error"
                       variant="contained"
+                      size="small"
                       fullWidth
                       disabled={creationButtonDisabled()}
                       onClick={() => setDeleteConfirmVisible(true)}
@@ -380,6 +390,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     <Button
                       color="secondary"
                       variant="contained"
+                      size="small"
                       fullWidth
                       disabled={creationButtonDisabled()}
                       onClick={() => setDeleteConfirmVisible(false)}
@@ -389,6 +400,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                     <Button
                       color="error"
                       variant="contained"
+                      size="small"
                       fullWidth
                       disabled={creationButtonDisabled()}
                       onClick={() => setDeletePortfolioId(params.portfolioId)}

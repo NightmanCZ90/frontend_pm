@@ -91,6 +91,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
             {(field, props) =>
               <ToggleButtonGroup
                 color="secondary"
+                size="small"
                 value={field.value}
                 exclusive
                 onChange={remapFieldProps(props).onChange}
@@ -123,6 +124,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Stock symbol"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -144,6 +146,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Transaction time"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 type="date"
                 value={field.value || ''}
@@ -167,6 +170,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Price"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -189,6 +193,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Share amount"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 required
                 value={field.value || ''}
                 error={Boolean(field.error)}
@@ -212,6 +217,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                   value={field.value}
                   label="Currency"
                   color="secondary"
+                  size="small"
                   onChange={(e) => setValue(transactionForm, 'currency', e.target.value)}
                 >
                   <For
@@ -245,6 +251,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Sector"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -266,6 +273,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 label="Commissions"
                 color="secondary"
                 variant="outlined"
+                size="small"
                 value={field.value || ''}
                 error={Boolean(field.error)}
                 helperText={field.error}
@@ -289,6 +297,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                     value={field.value}
                     label="Execution"
                     color="secondary"
+                    size="small"
                     onChange={(e) => setValue(transactionForm, 'execution', e.target.value)}
                   >
                     <For
@@ -315,6 +324,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
               label="Notes"
               color="secondary"
               variant="outlined"
+              size="small"
               fullWidth
               multiline
               required
@@ -330,6 +340,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
             type="submit"
             color="secondary"
             variant="contained"
+            size="small"
             disabled={transactionForm.invalid || transactionLoading}
           >
             Create Transaction
