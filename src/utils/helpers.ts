@@ -12,7 +12,7 @@ export const remapFieldProps = (fieldProps: {
   name: fieldProps.name,
   inputRef: fieldProps.ref,
   onBlur: fieldProps.onBlur,
-  onChange: (e: any) => { fieldProps.onChange(e); fieldProps.onInput(e) }
+  onChange: (e: any) => { fieldProps.onChange(e); fieldProps.onInput && fieldProps.onInput(e) }
 });
 
 export const generateGreenRedClass = (value: number) => {
