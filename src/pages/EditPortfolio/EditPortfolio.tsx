@@ -69,15 +69,15 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [investorEmailForm, InvestorEmail] = createForm<InvestorEmailForm>({ validateOn: "touched" });
 
   const [linkInvestorEmail, setLinkInvestorEmail] = createSignal<InvestorEmailForm | null>(null);
-  const [linkedPortfolio, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.portfolioId, payload));
+  const [portfolioLinked, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.portfolioId, payload));
 
   const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
-  const [unlinkedPortfolio, { mutate: mutateUnlink }] = createResource(unlinkPortfolioId, unlinkPortfolio);
+  const [portfolioUnlinked, { mutate: mutateUnlink }] = createResource(unlinkPortfolioId, unlinkPortfolio);
 
   const [editPortfolioForm, EditPortfolio] = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
 
   const [formData, setFormData] = createSignal<EditPortfolioForm | null>(null);
-  const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.portfolioId, formData));
+  const [portfolioUpdated] = createResource(formData, (formData) => updatePortfolio(params.portfolioId, formData));
 
   const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
   const [deletePortfolioId, setDeletePortfolioId] = createSignal<string | null>(null);
@@ -96,29 +96,29 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   });
 
   createEffect(() => {
-    if (!linkedPortfolio.error && linkedPortfolio()) {
+    if (!portfolioLinked.error && portfolioLinked()) {
       reset(investorEmailForm);
       mutateUnlink(undefined);
-      mutate(linkedPortfolio());
+      mutate(portfolioLinked());
     }
   });
 
   createEffect(() => {
-    if (!unlinkedPortfolio.error && unlinkedPortfolio()) {
+    if (!portfolioUnlinked.error && portfolioUnlinked()) {
       setUnlinkPortfolioId(null);
       mutateLink(undefined);
 
-      if (unlinkedPortfolio()?.userId !== auth.currentUser?.id) {
+      if (portfolioUnlinked()?.userId !== auth.currentUser?.id) {
         navigate('/portfolios');
       } else {
-        mutate(unlinkedPortfolio());
+        mutate(portfolioUnlinked());
       }
     }
   });
 
   createEffect(() => {
-    if (!updatedPortfolio.error && updatedPortfolio()) {
-      mutate(updatedPortfolio());
+    if (!portfolioUpdated.error && portfolioUpdated()) {
+      mutate(portfolioUpdated());
     }
   });
 
@@ -135,7 +135,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
     setFormData(values);
   }
 
-  const formLoading = () => updatedPortfolio.loading || linkedPortfolio.loading || unlinkedPortfolio.loading || deletedPortfolio.loading;
+  const formLoading = () => portfolioUpdated.loading || portfolioLinked.loading || portfolioUnlinked.loading || deletedPortfolio.loading;
   const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || formLoading();
 
   const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
@@ -242,11 +242,11 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
               </Switch>
 
-              <ErrorMessage resource={linkedPortfolio} />
-              <ErrorMessage resource={unlinkedPortfolio} />
+              <ErrorMessage resource={portfolioLinked} />
+              <ErrorMessage resource={portfolioUnlinked} />
 
-              <SuccessMessage resource={linkedPortfolio} successMessage="Portfolio has been successfully linked to investor" />
-              <SuccessMessage resource={unlinkedPortfolio} successMessage="Portfolio has been successfully unlinked." />
+              <SuccessMessage resource={portfolioLinked} successMessage="Portfolio has been successfully linked to investor" />
+              <SuccessMessage resource={portfolioUnlinked} successMessage="Portfolio has been successfully unlinked." />
             </div>
 
             <div class="portfolio-edit-form">
@@ -350,9 +350,9 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   <Show when={formLoading()} fallback={'Update portfolio'}><CircularProgress size={16} /></Show>
                 </Button>
 
-                <ErrorMessage resource={updatedPortfolio} />
+                <ErrorMessage resource={portfolioUpdated} />
 
-                <SuccessMessage resource={updatedPortfolio} successMessage="Portfolio has been successfully created" />
+                <SuccessMessage resource={portfolioUpdated} successMessage="Portfolio has been successfully created" />
 
               </EditPortfolio.Form>
             </div>
