@@ -1,4 +1,4 @@
-import { User } from ".";
+import { Transaction, User } from ".";
 
 export enum PortfolioOwnership {
   Managed = 'managed',
@@ -30,5 +30,5 @@ export interface Portfolio {
   confirmed: boolean;
   user?: User;
   portfolioManager?: User;
-  // transactions?: Transaction[];
+  transactions?: Transaction[];
 }
