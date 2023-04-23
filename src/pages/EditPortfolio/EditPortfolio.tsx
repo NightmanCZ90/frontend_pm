@@ -64,12 +64,12 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
   const { auth } = authStore;
 
-  const [portfolio, { mutate }] = createResource(params.id, getPortfolio);
+  const [portfolio, { mutate }] = createResource(params.portfolioId, getPortfolio);
 
   const [investorEmailForm, InvestorEmail] = createForm<InvestorEmailForm>({ validateOn: "touched" });
 
   const [linkInvestorEmail, setLinkInvestorEmail] = createSignal<InvestorEmailForm | null>(null);
-  const [linkedPortfolio, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.id, payload));
+  const [linkedPortfolio, { mutate: mutateLink }] = createResource(linkInvestorEmail, (payload) => linkPortfolio(params.portfolioId, payload));
 
   const [unlinkPortfolioId, setUnlinkPortfolioId] = createSignal<string | null>(null);
   const [unlinkedPortfolio, { mutate: mutateUnlink }] = createResource(unlinkPortfolioId, unlinkPortfolio);
@@ -77,7 +77,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [editPortfolioForm, EditPortfolio] = createForm<EditPortfolioForm>({ validateOn: "touched", initialValues: initialEditPortfolioForm });
 
   const [formData, setFormData] = createSignal<EditPortfolioForm | null>(null);
-  const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.id, formData));
+  const [updatedPortfolio] = createResource(formData, (formData) => updatePortfolio(params.portfolioId, formData));
 
   const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
   const [deletePortfolioId, setDeletePortfolioId] = createSignal<string | null>(null);
@@ -162,7 +162,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
           {(portfolio) => <>
             <div class="header-content">
-              <A href={`/portfolios/${params.id}`} class="link-back">
+              <A href={`/portfolios/${params.portfolioId}`} class="link-back">
                 <IconButton>
                   <ChevronLeft />
                 </IconButton>
@@ -219,7 +219,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   <Button
                     color="secondary"
                     variant="contained"
-                    onClick={() => setUnlinkPortfolioId(params.id)}
+                    onClick={() => setUnlinkPortfolioId(params.portfolioId)}
                     disabled={formLoading()}
                   >
                     <Show when={formLoading()} fallback={'Unlink investor'}><CircularProgress size={16} /></Show>
@@ -231,7 +231,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                   <Button
                     color="secondary"
                     variant="contained"
-                    onClick={() => setUnlinkPortfolioId(params.id)}
+                    onClick={() => setUnlinkPortfolioId(params.portfolioId)}
                     disabled={formLoading()}
                   >
                     <Show when={formLoading()} fallback={'Unlink from portfolio'}><CircularProgress size={16} /></Show>
@@ -391,7 +391,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       variant="contained"
                       fullWidth
                       disabled={creationButtonDisabled()}
-                      onClick={() => setDeletePortfolioId(params.id)}
+                      onClick={() => setDeletePortfolioId(params.portfolioId)}
                     >
                       <Show when={formLoading()} fallback={'Delete'}><CircularProgress size={16} /></Show>
                     </Button>

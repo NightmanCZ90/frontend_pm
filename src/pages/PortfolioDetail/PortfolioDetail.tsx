@@ -26,7 +26,7 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
 
   const { auth } = authStore;
 
-  const [portfolio] = createResource(params.id, getPortfolio);
+  const [portfolio] = createResource(params.portfolioId, getPortfolio);
 
   const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
 

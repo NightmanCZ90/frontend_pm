@@ -51,7 +51,7 @@ const App: Component = () => {
               <Route path={'/portfolios'}>
                 <Route path={'/'} element={<Portfolios />} />
                 <Route path={'/create'} element={<CreatePortfolio />} />
-                <Route path={'/:id'}>
+                <Route path={'/:portfolioId'}>
                   <Route path={'/'} element={<PortfolioDetail />} />
                   <Route path={'/edit'} element={<EditPortfolio />} />
                 </Route>
