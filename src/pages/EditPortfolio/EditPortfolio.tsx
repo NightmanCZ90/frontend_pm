@@ -82,7 +82,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
   const [deletePortfolioId, setDeletePortfolioId] = createSignal<string | null>(null);
 
-  const [deletedPortfolio] = createResource(deletePortfolioId, deletePortfolio);
+  const [portfolioDeleted] = createResource(deletePortfolioId, deletePortfolio);
 
   createEffect(() => {
     if ((!portfolio.error && portfolio())) {
@@ -123,7 +123,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
   });
 
   createEffect(() => {
-    if (deletedPortfolio()) {
+    if (portfolioDeleted()) {
       navigate('/portfolios');
     }
   });
@@ -135,7 +135,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
     setFormData(values);
   }
 
-  const formLoading = () => portfolioUpdated.loading || portfolioLinked.loading || portfolioUnlinked.loading || deletedPortfolio.loading;
+  const formLoading = () => portfolioUpdated.loading || portfolioLinked.loading || portfolioUnlinked.loading || portfolioDeleted.loading;
   const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || formLoading();
 
   const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
@@ -396,6 +396,10 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       <Show when={formLoading()} fallback={'Delete'}><CircularProgress size={16} /></Show>
                     </Button>
                   </div>
+
+                  <ErrorMessage resource={portfolioDeleted} />
+
+                  <SuccessMessage resource={portfolioDeleted} successMessage="Portfolio has been successfully deleted" />
                 </Show>
               </div>
             </Show>
