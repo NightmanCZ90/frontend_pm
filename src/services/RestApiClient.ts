@@ -222,12 +222,12 @@ class RestApiClient extends ApiClient {
   //   })
   // }
 
-  // async deleteTransaction(transactionId: number) {
-  //   return this.axiosRequest<Transaction>({
-  //     url: `/transactions/${transactionId}`,
-  //     method: 'DELETE',
-  //   })
-  // }
+  async deleteTransaction(transactionId: string | number) {
+    return this.axiosRequest<Transaction>({
+      url: `/transactions/${transactionId}`,
+      method: 'DELETE',
+    })
+  }
 }
 
 export default new RestApiClient();

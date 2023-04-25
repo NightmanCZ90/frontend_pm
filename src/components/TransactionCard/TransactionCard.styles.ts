@@ -60,5 +60,24 @@ export const StyledTransactionCard = styled('div') <IStyledTransactionCardProps>
         align-self: flex-end;
       }
     }
+
+    .bottom {
+      margin-top: 16px;
+
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .delete-buttons {
+        margin-top: 8px;
+        display: flex;
+        gap: 16px;
+      }
+    }
+  }
+
+  &:hover {
+    background-color: ${props => props.colors?.greenAccent[800]};
   }
 `;
