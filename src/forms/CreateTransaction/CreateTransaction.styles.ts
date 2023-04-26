@@ -16,6 +16,7 @@ export const StyledCreateTransaction = styled('div') <IStyledCreateTransactionPr
     .required,
     .defaulted {
       display: flex;
+      flex-direction: column;
       gap: 16px;
     }
 

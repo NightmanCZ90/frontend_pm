@@ -1,6 +1,6 @@
-import { Component, For, Show, createResource, createSignal } from "solid-js";
-import { createForm, custom, getValue, maxLength, minRange, required, setValue } from "@modular-forms/solid";
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@suid/material";
+import { Component, For, Show, createEffect, createResource, createSignal } from "solid-js";
+import { createForm, custom, getValue, maxLength, minRange, required, setValue, setValues } from "@modular-forms/solid";
+import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup } from "@suid/material";
 
 import { Currency, ExecutionType, Transaction, TransactionType } from "../../types";
 import { StyledCreateTransaction } from "./CreateTransaction.styles";
@@ -9,8 +9,9 @@ import RestApiClient from "../../services/RestApiClient";
 import ErrorMessage from "../../components/ErrorMessage";
 import SuccessMessage from "../../components/SuccessMessage";
 import { tokens, useThemeContext } from "../../styles/theme";
+import { getPortfolio } from "../../stores/PortfoliosStore";
 
-const createTransaction = (portfolioId: number, payload: TransactionForm,) => {
+const createTransaction = (portfolioId: number, payload: TransactionForm) => {
   const parsed = {
     ...payload,
     price: parseFloat(payload.price.replace(',', '.')),
@@ -23,17 +24,19 @@ const createTransaction = (portfolioId: number, payload: TransactionForm,) => {
   return RestApiClient.createTransaction(parsed);
 }
 
-const initialFormData = {
-  stockName: '',
-  stockSector: '',
-  transactionTime: new Date().toISOString().slice(0, 10),
-  transactionType: TransactionType.Buy,
-  numShares: '',
-  price: '',
-  currency: Currency.USD,
-  execution: ExecutionType.FIFO,
-  commissions: '',
-  notes: '',
+const updateTransaction = (portfolioId: number, payload: TransactionForm, transactionId?: number) => {
+  if (!transactionId) return;
+
+  const parsed = {
+    ...payload,
+    price: parseFloat(payload.price.replace(',', '.')),
+    numShares: parseFloat(payload?.numShares.replace(',', '.')),
+    commissions: payload.commissions ? parseFloat(payload?.commissions.replace(',', '.')) : null,
+    execution: payload.execution || ExecutionType.FIFO,
+    portfolioId,
+  }
+
+  return RestApiClient.updateTransaction(transactionId, parsed);
 }
 
 type TransactionForm = {
@@ -49,6 +52,35 @@ type TransactionForm = {
   notes: string;
 }
 
+const initialFormData: TransactionForm = {
+  // stockName: '',
+  stockName: 'TSLA',
+  stockSector: '',
+  transactionTime: new Date().toISOString().slice(0, 10),
+  transactionType: TransactionType.Buy,
+  // numShares: '',
+  numShares: '20',
+  // price: '',
+  price: '10',
+  currency: Currency.USD,
+  execution: ExecutionType.FIFO,
+  commissions: '',
+  notes: '',
+}
+
+const initialValues = (transaction: Transaction | null): TransactionForm => transaction ? {
+  stockName: transaction.stockName,
+  stockSector: transaction.stockSector || '',
+  transactionTime: new Date(transaction.transactionTime).toISOString().slice(0, 10),
+  transactionType: transaction.transactionType,
+  numShares: transaction.numShares.toString(),
+  price: transaction.price.toString(),
+  currency: transaction.currency,
+  execution: transaction.execution,
+  commissions: (transaction.commissions ?? '').toString(),
+  notes: '',
+} : initialFormData;
+
 const executionTypes = {
   [ExecutionType.FIFO]: 'FIFO', // First In First Out
   [ExecutionType.LIFO]: 'LIFO', // Last In First Out
@@ -60,7 +92,7 @@ const executionTypes = {
 
 interface ICreateTransactionProps {
   portfolioId: number;
-  transaction?: Transaction;
+  transaction: Transaction | null;
 }
 
 
@@ -68,22 +100,41 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const [transactionForm, Form] = createForm<TransactionForm>({ initialValues: initialFormData, validateOn: "touched" });
-  const [formData, setFormData] = createSignal<TransactionForm | null>(null);
+  const isEdit = () => Boolean(props.transaction);
 
-  const [transactionCreated] = createResource(formData, (formData) => createTransaction(props.portfolioId, formData));
+  const [transactionForm, Form] = createForm<TransactionForm>({ initialValues: initialValues(props.transaction), validateOn: "touched" });
+
+  const [createFormData, setCreateFormData] = createSignal<TransactionForm | null>(null);
+  const [transactionCreated] = createResource(createFormData, (formData) => createTransaction(props.portfolioId, formData));
+
+  const [updateFormData, setUpdateFormData] = createSignal<TransactionForm | null>(null);
+  const [transactionUpdated] = createResource(updateFormData, (formData) => updateTransaction(props.portfolioId, formData, props.transaction?.id));
+
+  createEffect(() => {
+    if (transactionCreated()) {
+      setValues(transactionForm, initialValues(transactionCreated() || null));
+      getPortfolio(props.portfolioId);
+    }
+  });
+
+  createEffect(() => {
+    if (transactionUpdated()) {
+      setValues(transactionForm, initialValues(transactionUpdated() || null));
+      getPortfolio(props.portfolioId);
+    }
+  });
 
   const handleSubmit = (values: TransactionForm, event: SubmitEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
-    setFormData(values);
+    if (isEdit()) setUpdateFormData(values);
+    if (!isEdit()) setCreateFormData(values);
   };
 
   const transactionLoading = transactionCreated.loading;
 
   return (
-    // <StyledCreateTransaction edit={isEdit ? 1 : 0}>
     <StyledCreateTransaction class="CreateTransaction" colors={colors()} edit={1}>
 
       <Form.Form onSubmit={handleSubmit}>
@@ -99,6 +150,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
                 value={field.value}
                 exclusive
                 onChange={remapFieldProps(props).onChange}
+                fullWidth
               >
                 <ToggleButton value={TransactionType.Buy}>Buy</ToggleButton>
                 <ToggleButton value={TransactionType.Sell}>Sell</ToggleButton>
@@ -347,14 +399,17 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
             size="small"
             disabled={transactionForm.invalid || transactionLoading}
           >
-            Create Transaction
+            <Show when={!transactionLoading} fallback={<CircularProgress size={24} />}>
+              <Show when={isEdit()} fallback={'Create Transaction'}>
+                Update Transaction
+              </Show>
+            </Show>
           </Button>
 
           <ErrorMessage resource={transactionCreated} />
 
           <SuccessMessage resource={transactionCreated} successMessage="Transaction has been successfully deleted" />
         </div>
-
       </Form.Form>
 
     </StyledCreateTransaction>

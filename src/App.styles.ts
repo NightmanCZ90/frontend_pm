@@ -9,7 +9,7 @@ export const StyledApp = styled('div') <IStyledAppProps>`
   display: flex;
   
   main {
-    width: 100%;
+    flex: 1;
     height: 100vh;
     overflow: hidden;
     
