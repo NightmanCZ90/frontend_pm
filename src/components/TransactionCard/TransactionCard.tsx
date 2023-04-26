@@ -10,6 +10,7 @@ import RestApiClient from "../../services/RestApiClient";
 import ErrorMessage from "../ErrorMessage";
 import SuccessMessage from "../SuccessMessage";
 import { transactionsStore } from "../../stores/TransactionsStore";
+import { getPortfolio } from "../../stores/PortfoliosStore";
 
 const deleteTransaction = async (id: number) => {
   return await RestApiClient.deleteTransaction(id);
@@ -25,7 +26,7 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const { setTransactions } = transactionsStore;
+  const { transactions, setTransactions } = transactionsStore;
 
   const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
   const [deleteTransactionId, setDeleteTransactionId] = createSignal<number | null>(null);
@@ -36,6 +37,12 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
   createEffect(() => {
     if (props.openId !== props.transaction.id) {
       setDeleteConfirmVisible(false);
+    }
+  });
+
+  createEffect(() => {
+    if (transactionDeleted()) {
+      getPortfolio(props.transaction.portfolioId);
     }
   });
 
@@ -64,7 +71,9 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
     <StyledTransactionCard
       class="TransactionCard"
       colors={colors()}
-      onClick={() => props.setOpenId(prevId => prevId === props.transaction.id ? null : props.transaction.id)}
+      isSelected={transactions.drawerPayload?.transaction?.id === props.transaction.id}
+      onMouseEnter={() => props.setOpenId(props.transaction.id)}
+      onMouseLeave={() => props.setOpenId(null)}
     >
       <div class="content">
 
@@ -97,7 +106,7 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
           </div>
 
           <div class="date">
-            {new Date(props.transaction.transactionTime).toLocaleDateString()}
+            {new Date(props.transaction.transactionTime).toISOString().slice(0, 10)}
           </div>
         </div>
 
@@ -121,9 +130,11 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
                     variant="contained"
                     size="small"
                     disabled={deleteButtonDisabled()}
-                    onClick={() => setTransactions('creationPayload', { portfolioId: props.transaction.portfolioId, transaction: props.transaction })}
+                    onClick={() => {
+                      setTransactions('drawerPayload', null);
+                      setTransactions('drawerPayload', { portfolioId: props.transaction.portfolioId, transaction: props.transaction })
+                    }}
                   >
-                    {/* <Show when={formLoading()} fallback={'Delete portfolio'}><CircularProgress size={16} /></Show> */}
                     Edit transaction
                   </Button>
                 </div>

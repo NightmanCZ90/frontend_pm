@@ -3,10 +3,11 @@ import { Colors } from "../../styles/theme";
 
 interface IStyledTransactionCardProps {
   colors: Colors;
+  isSelected: boolean;
 }
 
 export const StyledTransactionCard = styled('div') <IStyledTransactionCardProps>`
-  background-color: ${props => props.colors?.primary[500]};
+  background-color: ${({ colors, isSelected }) => isSelected ? colors?.greenAccent[700] : colors?.primary[500]};
   padding: 8px;
 
   .icon {
@@ -78,6 +79,6 @@ export const StyledTransactionCard = styled('div') <IStyledTransactionCardProps>
   }
 
   &:hover {
-    background-color: ${props => props.colors?.greenAccent[800]};
+    background-color: ${({ colors, isSelected }) => isSelected ? colors?.greenAccent[700] : colors?.greenAccent[800]};
   }
 `;
