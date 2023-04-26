@@ -137,6 +137,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
 
   const formLoading = () => portfolioUpdated.loading || portfolioLinked.loading || portfolioUnlinked.loading || portfolioDeleted.loading;
   const creationButtonDisabled = () => portfolio.loading || editPortfolioForm.invalid || formLoading();
+  const deletionButtonDisabled = () => portfolio.loading || formLoading();
 
   const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
 
@@ -376,7 +377,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       variant="contained"
                       size="small"
                       fullWidth
-                      disabled={creationButtonDisabled()}
+                      disabled={deletionButtonDisabled()}
                       onClick={() => setDeleteConfirmVisible(true)}
                     >
                       <Show when={formLoading()} fallback={'Delete portfolio'}><CircularProgress size={16} /></Show>
@@ -392,7 +393,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       variant="contained"
                       size="small"
                       fullWidth
-                      disabled={creationButtonDisabled()}
+                      disabled={deletionButtonDisabled()}
                       onClick={() => setDeleteConfirmVisible(false)}
                     >
                       <Show when={formLoading()} fallback={'Cancel'}><CircularProgress size={16} /></Show>
@@ -402,7 +403,7 @@ const EditPortfolio: Component<IEditPortfolioProps> = (props) => {
                       variant="contained"
                       size="small"
                       fullWidth
-                      disabled={creationButtonDisabled()}
+                      disabled={deletionButtonDisabled()}
                       onClick={() => setDeletePortfolioId(params.portfolioId)}
                     >
                       <Show when={formLoading()} fallback={'Delete'}><CircularProgress size={16} /></Show>
