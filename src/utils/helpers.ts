@@ -46,5 +46,6 @@ export const generatePortfolioOwnership = (data: { userId?: number | null, portf
 // };
 
 export const sortTransactionsByDateAndId = (transactions: Transaction[]) => {
-  return transactions.sort((a, b) => new Date(b.transactionTime).getTime() - new Date(a.transactionTime).getTime() || b.id - a.id);
+  const copiedTransactions = [...transactions];
+  return copiedTransactions.sort((a, b) => new Date(b.transactionTime).getTime() - new Date(a.transactionTime).getTime() || b.id - a.id);
 }
