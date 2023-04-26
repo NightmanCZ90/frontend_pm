@@ -6,12 +6,14 @@ type PortfoliosState = {
   managed: Portfolio[];
   managing: Portfolio[];
   personal: Portfolio[];
+  selectedPortfolio: Portfolio | null;
 }
 
 const state: PortfoliosState = {
   managed: [],
   managing: [],
   personal: [],
+  selectedPortfolio: null,
 }
 
 const [portfolios, setPortfolios] = createStore(state);
@@ -24,6 +26,13 @@ export const getUsersPortfolios = async () => {
   if (portfolios) {
     setAllPortfolios(portfolios);
   }
+}
+
+export const getPortfolio = async (portfolioId: string | number) => {
+  const portfolio = await RestApiClient.getPortfolio(portfolioId);
+
+  if (portfolio) setPortfolios('selectedPortfolio', portfolio);
+  return portfolio;
 }
 
 export const portfoliosStore = { portfolios, setPortfolios };
