@@ -3,18 +3,13 @@ import { ChevronLeft } from "@suid/icons-material";
 import { Button, IconButton } from "@suid/material";
 import { Component, createResource, Show } from "solid-js";
 import Header from "../../components/Header";
-import RestApiClient from "../../services/RestApiClient";
 import { tokens, useThemeContext } from "../../styles/theme";
 import { PortfolioOwnership } from "../../types";
 import { generatePortfolioOwnership, generateUserName } from "../../utils/helpers";
 import { StyledPortfolioDetail, StyledPortfolioDetailContent } from "./PortfolioDetail.styles";
 import { authStore } from "../../stores/AuthStore";
-import CreateTransaction from "../../forms/CreateTransaction";
 import TransactionList from "../../components/TransactionList";
-
-const getPortfolio = async (id: string) => {
-  return RestApiClient.getPortfolio(id);
-}
+import { getPortfolio, portfoliosStore } from "../../stores/PortfoliosStore";
 
 interface IPortfolioDetailProps {
 
@@ -26,14 +21,15 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
   const colors = () => tokens(mode());
 
   const { auth } = authStore;
+  const { portfolios } = portfoliosStore;
 
   const [portfolio] = createResource(params.portfolioId, getPortfolio);
 
-  const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolio() });
+  const ownership = () => generatePortfolioOwnership({ userId: auth.currentUser?.id, portfolio: portfolios.selectedPortfolio });
 
   const getOwnershipTitle = () => {
-    if (ownership() === PortfolioOwnership.Managed || ownership() === PortfolioOwnership.Unconfirmed) return `Managed by ${generateUserName(portfolio()?.portfolioManager)}`;
-    if (ownership() === PortfolioOwnership.Managing) return `Managing for ${generateUserName(portfolio()?.user)}`;
+    if (ownership() === PortfolioOwnership.Managed || ownership() === PortfolioOwnership.Unconfirmed) return `Managed by ${generateUserName(portfolios.selectedPortfolio?.portfolioManager)}`;
+    if (ownership() === PortfolioOwnership.Managing) return `Managing for ${generateUserName(portfolios.selectedPortfolio?.user)}`;
     return 'Personal';
   };
 
@@ -42,7 +38,7 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
 
       <Show when={!portfolio.error} fallback={portfolio.error.message}>
 
-        <Show when={portfolio.state === 'ready' && portfolio()} fallback={'loading'}>
+        <Show when={portfolio.state === 'ready' && portfolios.selectedPortfolio} fallback={'loading'}>
 
           {(portfolio) => <>
             <div class="header-content">
@@ -75,10 +71,6 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
                 </div>
               </section>
 
-              {/* TODO: Add transaction creation form */}
-
-              {/* TODO: Add transactions list */}
-
               <section class="ownership">
                 <div class="owner">
                   <h3>Portfolio ownership: <span>{getOwnershipTitle()}</span></h3>
@@ -95,15 +87,10 @@ const PortfolioDetail: Component<IPortfolioDetailProps> = (props) => {
                 </div>
               </section>
 
-              <section class="transaction-form">
-                <CreateTransaction
-                  portfolioId={portfolio().id}
-                />
-              </section>
-
               <section class="transaction-list">
                 <TransactionList
                   transactions={portfolio().transactions || []}
+                  portfolioId={parseInt(params.portfolioId)}
                 />
               </section>
 
