@@ -132,7 +132,7 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
     if (!isEdit()) setCreateFormData(values);
   };
 
-  const transactionLoading = transactionCreated.loading;
+  const transactionLoading = transactionCreated.loading || transactionUpdated.loading;
 
   return (
     <StyledCreateTransaction class="CreateTransaction" colors={colors()} edit={1}>
@@ -407,8 +407,10 @@ const CreateTransaction: Component<ICreateTransactionProps> = (props) => {
           </Button>
 
           <ErrorMessage resource={transactionCreated} />
+          <SuccessMessage resource={transactionCreated} successMessage="Transaction has been successfully created" />
 
-          <SuccessMessage resource={transactionCreated} successMessage="Transaction has been successfully deleted" />
+          <ErrorMessage resource={transactionUpdated} />
+          <SuccessMessage resource={transactionUpdated} successMessage="Transaction has been successfully updated" />
         </div>
       </Form.Form>
 
