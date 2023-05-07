@@ -50,7 +50,7 @@ const App: Component = () => {
     : <SignUp setShowLogin={setShowLogin} />
 
   return (
-    <StyledApp>
+    <StyledApp class='App'>
 
       <Show when={authStore.auth.tokens} fallback={renderFallback()}>
         <Sidebar />
@@ -90,6 +90,7 @@ const App: Component = () => {
               position: 'static',
               padding: '20px',
               backgroundColor: colors()?.primary[700],
+              width: drawerWidth,
 
               '& .header': {
                 display: 'flex',

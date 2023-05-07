@@ -7,6 +7,7 @@ interface IStyledAppProps {
 export const StyledApp = styled('div') <IStyledAppProps>`
   height: 100vh;
   display: flex;
+  overflow-x: hidden;
   
   main {
     flex: 1;
