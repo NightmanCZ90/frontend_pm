@@ -15,13 +15,7 @@ import PortfolioDetail from './pages/PortfolioDetail';
 import CreatePortfolio from './pages/CreatePortfolio';
 import EditPortfolio from './pages/EditPortfolio';
 import { authStore } from './stores/AuthStore';
-import { Drawer, IconButton } from '@suid/material';
-import CreateTransaction from './forms/CreateTransaction';
-import { transactionsStore } from './stores/TransactionsStore';
-import { tokens, useThemeContext } from './styles/theme';
-import { ChevronRight } from '@suid/icons-material';
-
-const drawerWidth = 400;
+import GlobalDrawer from './pages/globals/GlobalDrawer';
 
 // TODO: Add Internationalization and Localization
 // export const formatter = new Intl.NumberFormat('en-US');
@@ -31,15 +25,11 @@ export const formatterWithCurrency = new Intl.NumberFormat('en-US', {
 })
 
 const App: Component = () => {
-  const [mode] = useThemeContext();
-  const colors = () => tokens(mode());
 
   useAxiosPrivate();
   useBootstrap();
 
   const [showLogin, setShowLogin] = createSignal(true);
-
-  const { transactions, setTransactions } = transactionsStore;
 
   const authTokens = localStorage.getItem('jwt_token');
   authStore.setAuth('tokens', authTokens ? JSON.parse(authTokens) : null);
@@ -75,51 +65,7 @@ const App: Component = () => {
           </div>
         </main>
 
-        <Drawer
-          anchor={'right'}
-          open={Boolean(transactions.drawerPayload)}
-          variant="persistent"
-          hideBackdrop
-          sx={{
-            display: Boolean(transactions.drawerPayload) ? 'flex' : 'none',
-            width: drawerWidth,
-            transition: 'all 5s',
-
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              position: 'static',
-              padding: '20px',
-              backgroundColor: colors()?.primary[700],
-              width: drawerWidth,
-
-              '& .header': {
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '16px',
-              }
-            }
-          }}
-        >
-          <Show when={transactions.drawerPayload}>
-            {(payload) =>
-              <>
-                <div class="header">
-                  <Show when={payload().transaction} fallback={'Create transaction'}>
-                    Edit transaction
-                  </Show>
-                  <IconButton onClick={() => setTransactions('drawerPayload', null)}>
-                    <ChevronRight />
-                  </IconButton>
-                </div>
-                <CreateTransaction
-                  portfolioId={payload().portfolioId}
-                  transaction={payload().transaction}
-                />
-              </>
-            }
-          </Show>
-        </Drawer>
+        <GlobalDrawer />
       </Show>
 
     </StyledApp>
