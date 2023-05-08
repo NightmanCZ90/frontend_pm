@@ -16,7 +16,7 @@ const state: TransactionsState = {
 
 const [transactions, setTransactions] = createStore(state);
 
-export const transactionsStore = {
-  transactions,
-  setTransactions,
-};
+// export const transactionsStore = {
+//   transactions,
+//   setTransactions,
+// };

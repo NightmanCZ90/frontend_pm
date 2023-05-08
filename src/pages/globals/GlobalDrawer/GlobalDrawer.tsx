@@ -2,8 +2,8 @@ import { Drawer, IconButton } from "@suid/material";
 import { Component, Show } from "solid-js"
 import { tokens, useThemeContext } from "../../../styles/theme";
 import { ChevronRight } from "@suid/icons-material";
-import { transactionsStore } from "../../../stores/TransactionsStore";
 import CreateTransaction from "../../../forms/CreateTransaction";
+import { DrawerType, drawerStore, emptyDrawerPayload } from "../../../stores/DrawerStore";
 
 const drawerWidth = 400;
 
@@ -15,9 +15,9 @@ const GlobalDrawer: Component<IGlobalDrawerProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const { transactions, setTransactions } = transactionsStore;
+  const { drawer } = drawerStore;
 
-  const isOpen = () => Boolean(transactions.drawerPayload);
+  const isOpen = () => Boolean(drawer.payload);
 
   return (
     <Drawer
@@ -47,14 +47,14 @@ const GlobalDrawer: Component<IGlobalDrawerProps> = (props) => {
         }
       }}
     >
-      <Show when={transactions.drawerPayload}>
+      <Show when={drawer.payload?.drawerType === DrawerType.Transaction && drawer.payload}>
         {(payload) =>
           <>
             <div class="header">
               <Show when={payload().transaction} fallback={'Create transaction'}>
                 Edit transaction
               </Show>
-              <IconButton onClick={() => setTransactions('drawerPayload', null)}>
+              <IconButton onClick={emptyDrawerPayload}>
                 <ChevronRight />
               </IconButton>
             </div>

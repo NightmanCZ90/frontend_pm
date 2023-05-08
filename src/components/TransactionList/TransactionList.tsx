@@ -4,7 +4,7 @@ import { StyledTransactionList } from "./TransactionList.styles";
 import { sortTransactionsByDateAndId } from "../../utils/helpers";
 import TransactionCard from "../TransactionCard";
 import { Button } from "@suid/material";
-import { transactionsStore } from "../../stores/TransactionsStore";
+import { DrawerType, setDrawerPayload } from "../../stores/DrawerStore";
 
 interface ITransactionListProps {
   transactions: Transaction[];
@@ -13,8 +13,6 @@ interface ITransactionListProps {
 
 const TransactionList: Component<ITransactionListProps> = (props) => {
   const [openId, setOpenId] = createSignal<number | null>(null);
-
-  const { setTransactions } = transactionsStore;
 
   const sortedTransactions = () => sortTransactionsByDateAndId(props.transactions);
 
@@ -26,8 +24,14 @@ const TransactionList: Component<ITransactionListProps> = (props) => {
           variant="contained"
           size="small"
           onClick={() => {
-            setTransactions('drawerPayload', null);
-            setTransactions('drawerPayload', { portfolioId: props.portfolioId, transaction: null });
+            setDrawerPayload(
+              DrawerType.Transaction,
+              {
+                drawerType: DrawerType.Transaction,
+                portfolioId: props.portfolioId,
+                transaction: null
+              }
+            );
           }}
         >
           Create new transaction

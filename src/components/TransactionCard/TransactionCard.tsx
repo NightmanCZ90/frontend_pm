@@ -9,8 +9,8 @@ import { formatterWithCurrency } from "../../App";
 import RestApiClient from "../../services/RestApiClient";
 import ErrorMessage from "../ErrorMessage";
 import SuccessMessage from "../SuccessMessage";
-import { transactionsStore } from "../../stores/TransactionsStore";
 import { getPortfolio } from "../../stores/PortfoliosStore";
+import { DrawerType, drawerStore, setDrawerPayload } from "../../stores/DrawerStore";
 
 const deleteTransaction = async (id: number) => {
   return await RestApiClient.deleteTransaction(id);
@@ -26,7 +26,7 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const { transactions, setTransactions } = transactionsStore;
+  const { drawer } = drawerStore;
 
   const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
   const [deleteTransactionId, setDeleteTransactionId] = createSignal<number | null>(null);
@@ -71,7 +71,7 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
     <StyledTransactionCard
       class="TransactionCard"
       colors={colors()}
-      isSelected={transactions.drawerPayload?.transaction?.id === props.transaction.id}
+      isSelected={drawer.payload?.drawerType === DrawerType.Transaction && drawer.payload?.transaction?.id === props.transaction.id}
       onMouseEnter={() => props.setOpenId(props.transaction.id)}
       onMouseLeave={() => props.setOpenId(null)}
     >
@@ -131,8 +131,14 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
                     size="small"
                     disabled={deleteButtonDisabled()}
                     onClick={() => {
-                      setTransactions('drawerPayload', null);
-                      setTransactions('drawerPayload', { portfolioId: props.transaction.portfolioId, transaction: props.transaction })
+                      setDrawerPayload(
+                        DrawerType.Transaction,
+                        {
+                          drawerType: DrawerType.Transaction,
+                          portfolioId: props.transaction.portfolioId,
+                          transaction: props.transaction
+                        }
+                      );
                     }}
                   >
                     Edit transaction
