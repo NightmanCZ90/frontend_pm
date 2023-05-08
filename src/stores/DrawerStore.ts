@@ -8,24 +8,22 @@ export enum DrawerType {
 
 export type DrawerPayload = {
   [DrawerType.Transaction]: {
-    drawerType: DrawerType.Transaction;
     portfolioId: number;
     transaction: Transaction | null;
   };
   // [DrawerType.Portfolio]: {
-  //   drawerType: DrawerType.Portfolio;
   //   // portfolioId: number;
   //   // transaction: Transaction | null;
   //   portfolios: [];
   // }
 }
 
-type DrawerPayloadState<T extends DrawerType> = {
-  drawerType: T | null;
-  payload: DrawerPayload[T] | null;
+type DrawerPayloadState = {
+  drawerType: DrawerType | null;
+  payload: DrawerPayload | null;
 }
 
-const state: DrawerPayloadState<DrawerType> = {
+const state: DrawerPayloadState = {
   drawerType: null,
   payload: null,
 }
@@ -42,8 +40,12 @@ export const emptyDrawerPayload = () => {
   setDrawer('payload', null);
 }
 
-export function setDrawerPayload<T extends DrawerType>(type: T, payload: DrawerPayload[T]) {
+export const setDrawerPayload = <T extends DrawerType>(type: T, payload: DrawerPayload[T]) => {
   emptyDrawerPayload();
   setDrawer('drawerType', type);
-  setDrawer('payload', payload);
+  setDrawer('payload', { [type]: payload });
+}
+
+export const getDrawerPayload = <T extends DrawerType>(type: T) => {
+  return drawer.payload?.[type];
 }

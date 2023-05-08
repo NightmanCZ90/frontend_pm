@@ -10,7 +10,7 @@ import RestApiClient from "../../services/RestApiClient";
 import ErrorMessage from "../ErrorMessage";
 import SuccessMessage from "../SuccessMessage";
 import { getPortfolio } from "../../stores/PortfoliosStore";
-import { DrawerType, drawerStore, setDrawerPayload } from "../../stores/DrawerStore";
+import { DrawerType, getDrawerPayload, setDrawerPayload } from "../../stores/DrawerStore";
 
 const deleteTransaction = async (id: number) => {
   return await RestApiClient.deleteTransaction(id);
@@ -26,7 +26,7 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const { drawer } = drawerStore;
+  const transactionDrawer = () => getDrawerPayload(DrawerType.Transaction);
 
   const [deleteConfirmVisible, setDeleteConfirmVisible] = createSignal<boolean>(false);
   const [deleteTransactionId, setDeleteTransactionId] = createSignal<number | null>(null);
@@ -71,7 +71,7 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
     <StyledTransactionCard
       class="TransactionCard"
       colors={colors()}
-      isSelected={drawer.payload?.drawerType === DrawerType.Transaction && drawer.payload?.transaction?.id === props.transaction.id}
+      isSelected={Boolean(transactionDrawer()) && transactionDrawer()?.transaction?.id === props.transaction.id}
       onMouseEnter={() => props.setOpenId(props.transaction.id)}
       onMouseLeave={() => props.setOpenId(null)}
     >
@@ -134,7 +134,6 @@ const TransactionCard: Component<ITransactionCardProps> = (props) => {
                       setDrawerPayload(
                         DrawerType.Transaction,
                         {
-                          drawerType: DrawerType.Transaction,
                           portfolioId: props.transaction.portfolioId,
                           transaction: props.transaction
                         }

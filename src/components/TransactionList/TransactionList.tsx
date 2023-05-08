@@ -27,7 +27,6 @@ const TransactionList: Component<ITransactionListProps> = (props) => {
             setDrawerPayload(
               DrawerType.Transaction,
               {
-                drawerType: DrawerType.Transaction,
                 portfolioId: props.portfolioId,
                 transaction: null
               }

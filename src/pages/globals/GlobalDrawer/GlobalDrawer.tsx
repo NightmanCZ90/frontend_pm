@@ -3,7 +3,7 @@ import { Component, Show } from "solid-js"
 import { tokens, useThemeContext } from "../../../styles/theme";
 import { ChevronRight } from "@suid/icons-material";
 import CreateTransaction from "../../../forms/CreateTransaction";
-import { DrawerType, drawerStore, emptyDrawerPayload } from "../../../stores/DrawerStore";
+import { DrawerType, emptyDrawerPayload, getDrawerPayload } from "../../../stores/DrawerStore";
 
 const drawerWidth = 400;
 
@@ -15,9 +15,9 @@ const GlobalDrawer: Component<IGlobalDrawerProps> = (props) => {
   const [mode] = useThemeContext();
   const colors = () => tokens(mode());
 
-  const { drawer } = drawerStore;
+  const transactionDrawer = () => getDrawerPayload(DrawerType.Transaction);
 
-  const isOpen = () => Boolean(drawer.payload);
+  const isOpen = () => Boolean(transactionDrawer());
 
   return (
     <Drawer
@@ -47,7 +47,7 @@ const GlobalDrawer: Component<IGlobalDrawerProps> = (props) => {
         }
       }}
     >
-      <Show when={drawer.payload?.drawerType === DrawerType.Transaction && drawer.payload}>
+      <Show when={transactionDrawer()}>
         {(payload) =>
           <>
             <div class="header">
